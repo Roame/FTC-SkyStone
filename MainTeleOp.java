@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-
+@TeleOp(name = "Main TeleOp", group = "Competition")
 public class MainTeleOp extends OpMode {
     @Override
     public void init() {
