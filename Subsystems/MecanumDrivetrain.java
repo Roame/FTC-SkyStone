@@ -1,23 +1,28 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class MecanumDrive {
+import org.firstinspires.ftc.robotcore.external.Const;
+import org.firstinspires.ftc.teamcode.Constants;
+
+public class MecanumDrivetrain {
     private DcMotor FR, FL, BR, BL;
+    private Constants c = new Constants();
 
 
 
 
-    public MecanumDrive(){
+    public MecanumDrivetrain(){
 
     }
-    public void InitDrive(HardwareMap HW){
-        FR = HW.get(DcMotor.class, "FR");
-        FL = HW.get(DcMotor.class, "FL");
-        BR = HW.get(DcMotor.class, "BR");
-        BL = HW.get(DcMotor.class, "BL");
+    public void initDrive(HardwareMap HW){
+        FR = HW.get(DcMotor.class, c.kMecanumFRMotor);
+        FL = HW.get(DcMotor.class, c.kMecanumFLMotor);
+        BR = HW.get(DcMotor.class, c.kMecanumBRMotor);
+        BL = HW.get(DcMotor.class, c.kMecanumBLMotor);
+
         FR.setDirection(DcMotor.Direction.REVERSE);
         FL.setDirection(DcMotor.Direction.FORWARD);
         BR.setDirection(DcMotor.Direction.REVERSE);
@@ -25,7 +30,7 @@ public class MecanumDrive {
 
     }
 
-    public void Drive(float LeftJoyStickX, float RightJoyStickX, float RightJoyStickY){
+    public void drive(float LeftJoyStickX, float RightJoyStickX, float RightJoyStickY){
 
         FR.setPower(Clip(-1, 1, RightJoyStickY+RightJoyStickX-LeftJoyStickX));
         FL.setPower(Clip(-1, 1, RightJoyStickY+RightJoyStickX+LeftJoyStickX));
@@ -36,15 +41,15 @@ public class MecanumDrive {
 
     }
     private double Clip(double Min, double Max, double Value){
-        double Cliped;
+        double Clipped;
         if (Value>Max) {
-            Cliped=Max;
+            Clipped=Max;
         } else if (Value<Min){
-            Cliped=Min;
+            Clipped=Min;
         } else {
-            Cliped=Value;
+            Clipped=Value;
         }
-        return Cliped;
+        return Clipped;
 
 
 
