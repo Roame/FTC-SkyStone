@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Const;
 
 @TeleOp(name = "Main TeleOp", group = "Competition")
 public class MainTeleOp extends OpMode {
-    Constants constants = new Constants()
+    Constants constants = new Constants();
     MecanumDrive MecD = new MecanumDrive();
 
     @Override
