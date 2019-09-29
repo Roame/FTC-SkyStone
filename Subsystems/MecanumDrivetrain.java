@@ -17,6 +17,7 @@ public class MecanumDrivetrain {
     public MecanumDrivetrain(){
 
     }
+  
     public void initMecanum(HardwareMap HW){
         FR = HW.get(DcMotor.class, c.kMecanumFRMotor);
         FL = HW.get(DcMotor.class, c.kMecanumFLMotor);

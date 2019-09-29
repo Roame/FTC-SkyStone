@@ -16,6 +16,10 @@ public class Constants {
     public String kSlideLeftMotor = "left_motor";
     public String kSlideCenterMotor = "center_motor";
 
+    //For the stone intake:
+    public String kIntakeRightMotor = "IRM";
+    public String kIntakeLeftMotor = "ILM";
+
 
 
 
