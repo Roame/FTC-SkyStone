@@ -10,19 +10,17 @@ import org.firstinspires.ftc.teamcode.Constants;
 public class MecanumDrivetrain {
     private DcMotor FR, FL, BR, BL;
     private Constants c = new Constants();
+    private HardwareMap hw;
 
-
-
-
-    public MecanumDrivetrain(){
-
+    public MecanumDrivetrain(HardwareMap hw){
+        this.hw = hw;
     }
   
-    public void initMecanum(HardwareMap HW){
-        FR = HW.get(DcMotor.class, c.kMecanumFRMotor);
-        FL = HW.get(DcMotor.class, c.kMecanumFLMotor);
-        BR = HW.get(DcMotor.class, c.kMecanumBRMotor);
-        BL = HW.get(DcMotor.class, c.kMecanumBLMotor);
+    public void initMecanum(){
+        FR = hw.get(DcMotor.class, c.kMecanumFRMotor);
+        FL = hw.get(DcMotor.class, c.kMecanumFLMotor);
+        BR = hw.get(DcMotor.class, c.kMecanumBRMotor);
+        BL = hw.get(DcMotor.class, c.kMecanumBLMotor);
 
         FR.setDirection(DcMotor.Direction.REVERSE);
         FL.setDirection(DcMotor.Direction.FORWARD);
