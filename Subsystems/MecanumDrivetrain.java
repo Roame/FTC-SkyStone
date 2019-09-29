@@ -17,7 +17,7 @@ public class MecanumDrivetrain {
     public MecanumDrivetrain(){
 
     }
-    public void initDrive(HardwareMap HW){
+    public void initMecanum(HardwareMap HW){
         FR = HW.get(DcMotor.class, c.kMecanumFRMotor);
         FL = HW.get(DcMotor.class, c.kMecanumFLMotor);
         BR = HW.get(DcMotor.class, c.kMecanumBRMotor);
@@ -30,7 +30,7 @@ public class MecanumDrivetrain {
 
     }
 
-    public void drive(float LeftJoyStickX, float RightJoyStickX, float RightJoyStickY){
+    public void MecanumDrive(float LeftJoyStickX, float RightJoyStickX, float RightJoyStickY){
 
         FR.setPower(Clip(-1, 1, RightJoyStickY+RightJoyStickX-LeftJoyStickX));
         FL.setPower(Clip(-1, 1, RightJoyStickY+RightJoyStickX+LeftJoyStickX));
