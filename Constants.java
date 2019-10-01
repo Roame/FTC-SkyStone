@@ -1,24 +1,24 @@
 package org.firstinspires.ftc.teamcode;
 
-public class Constants {
-    public Constants(){
+public final class Constants {
+    private Constants(){
     }
 
     //For the hardware mapping (naming and such) ----------------------------
     //For a mecanum drivetrain
-    public String kMecanumFLMotor = "FL";
-    public String kMecanumFRMotor = "FR";
-    public String kMecanumBLMotor = "BL";
-    public String kMecanumBRMotor = "BR";
+    public static final String kMecanumFLMotor = "FL";
+    public static final String kMecanumFRMotor = "FR";
+    public static final String kMecanumBLMotor = "BL";
+    public static final String kMecanumBRMotor = "BR";
 
     //For a Omni slide drivetrain
-    public String kSlideRightMotor = "right_motor";
-    public String kSlideLeftMotor = "left_motor";
-    public String kSlideCenterMotor = "center_motor";
+    public static final String kSlideRightMotor = "right_motor";
+    public static final String kSlideLeftMotor = "left_motor";
+    public static final String kSlideCenterMotor = "center_motor";
 
     //For the stone intake:
-    public String kIntakeRightMotor = "IRM";
-    public String kIntakeLeftMotor = "ILM";
+    public static final String kIntakeRightMotor = "IRM";
+    public static final String kIntakeLeftMotor = "ILM";
 
 
 
@@ -26,7 +26,7 @@ public class Constants {
 
     //Other
 
-    double drivePower = 1.0; //This scales the drive power from 0 to 1.
+    public static final double drivePower = 1.0; //This scales the drive power from 0 to 1.
 
 
 
