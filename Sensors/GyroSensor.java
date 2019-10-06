@@ -50,16 +50,19 @@ public class GyroSensor {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
     }
-    public void test(){
 
-
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-
-
-
+    public void readGyro(){
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
 
-
+    public float getX(){
+        return angles.thirdAngle;
+    }
+    public float getY(){
+        return angles.secondAngle;
+    }
+    public float getZ(){
+        return angles.firstAngle;
+    }
 
 }
