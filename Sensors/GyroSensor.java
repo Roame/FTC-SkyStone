@@ -12,8 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-@TeleOp(name = "Sensor: BNO055 IMU", group = "Sensor")
-//@Disabled                            // Comment this out to add to the opmode list
 public class GyroSensor {
         //----------------------------------------------------------------------------------------------
         // State
