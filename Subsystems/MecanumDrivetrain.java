@@ -23,21 +23,15 @@ public class MecanumDrivetrain {
         BL.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    public void MecanumDrive(float LeftJoyStickX, float RightJoyStickX, float RightJoyStickY){
-        //float[] inputs = correctJoysticks();
+    public void MecanumDrive(float drive, float rotation, float strafe){
+        float FRPower = Range.clip(drive-strafe-rotation, (float) -1.0, (float) 1.0);
+        float FLPower = Range.clip(drive+strafe+rotation, (float) -1.0, (float) 1.0);
+        float BRPower = Range.clip(drive+strafe-rotation, (float) -1.0, (float) 1.0);
+        float BLPower = Range.clip(drive-strafe+rotation, (float) -1.0, (float) 1.0);
 
-        float rotation = LeftJoyStickX;
-        float strafe = RightJoyStickX;
-        float drive = -RightJoyStickY;
-
-        float FRPower = RightJoyStickY-RightJoyStickX-LeftJoyStickX;
-
-
-        FR.setPower(Range.clip(RightJoyStickY-RightJoyStickX-LeftJoyStickX, -1.0, 1.0));
-        FL.setPower(Range.clip(RightJoyStickY+RightJoyStickX+LeftJoyStickX, -1.0, 1.0));
-        BR.setPower(Range.clip(RightJoyStickY+RightJoyStickX-LeftJoyStickX, -1.0, 1.0));
-        BL.setPower(Range.clip(RightJoyStickY-RightJoyStickX+LeftJoyStickX, -1.0, 1.0));
+        FR.setPower(FRPower);
+        FL.setPower(FLPower);
+        BR.setPower(BRPower);
+        BL.setPower(BLPower);
     }
-
-    //public float[] correctJoysticks(float)
 }

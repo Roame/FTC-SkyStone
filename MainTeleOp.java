@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.StoneIntake;
@@ -20,12 +19,7 @@ public class MainTeleOp extends OpMode {
   
     @Override
     public void loop() {
-        telemetry.addData("Right X: ", gamepad1.right_stick_x);
-        telemetry.addData("Left Stick x: ", gamepad1.left_stick_x);
-        telemetry.addData("Right Y:", gamepad1.right_stick_y);
-
-
-        mecDrive.MecanumDrive(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y);
+        mecDrive.MecanumDrive(-gamepad1.right_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
         if(gamepad1.right_bumper) {
             stoneIntake.intakePower(0.5);
