@@ -8,28 +8,36 @@ import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class MecanumDrivetrain {
     private DcMotor FR, FL, BR, BL;
-    private HardwareMap hw;
 
-    public MecanumDrivetrain(HardwareMap hw){
-        this.hw = hw;
-    }
+    public MecanumDrivetrain(){}
   
-    public void initMecanum(){
+    public void initMecanum(HardwareMap hw){
         FR = hw.get(DcMotor.class, kMecanumFRMotor);
         FL = hw.get(DcMotor.class, kMecanumFLMotor);
         BR = hw.get(DcMotor.class, kMecanumBRMotor);
         BL = hw.get(DcMotor.class, kMecanumBLMotor);
 
-        FR.setDirection(DcMotor.Direction.REVERSE);
-        FL.setDirection(DcMotor.Direction.FORWARD);
-        BR.setDirection(DcMotor.Direction.REVERSE);
-        BL.setDirection(DcMotor.Direction.FORWARD);
+        FR.setDirection(DcMotor.Direction.FORWARD);
+        FL.setDirection(DcMotor.Direction.REVERSE);
+        BR.setDirection(DcMotor.Direction.FORWARD);
+        BL.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void MecanumDrive(float LeftJoyStickX, float RightJoyStickX, float RightJoyStickY){
-        FR.setPower(Range.clip(RightJoyStickY+RightJoyStickX-LeftJoyStickX, -1.0, 1.0));
+        //float[] inputs = correctJoysticks();
+
+        float rotation = LeftJoyStickX;
+        float strafe = RightJoyStickX;
+        float drive = -RightJoyStickY;
+
+        float FRPower = RightJoyStickY-RightJoyStickX-LeftJoyStickX;
+
+
+        FR.setPower(Range.clip(RightJoyStickY-RightJoyStickX-LeftJoyStickX, -1.0, 1.0));
         FL.setPower(Range.clip(RightJoyStickY+RightJoyStickX+LeftJoyStickX, -1.0, 1.0));
-        BR.setPower(Range.clip(RightJoyStickY-RightJoyStickX-LeftJoyStickX, -1.0, 1.0));
+        BR.setPower(Range.clip(RightJoyStickY+RightJoyStickX-LeftJoyStickX, -1.0, 1.0));
         BL.setPower(Range.clip(RightJoyStickY-RightJoyStickX+LeftJoyStickX, -1.0, 1.0));
     }
+
+    //public float[] correctJoysticks(float)
 }
