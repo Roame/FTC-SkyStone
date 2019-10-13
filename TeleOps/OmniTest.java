@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode;
-
-import android.transition.Slide;
+package org.firstinspires.ftc.teamcode.TeleOps;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystems.SlideDrivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.StoneIntake;
 
-@TeleOp(name = "Main TeleOp", group = "Competition")
-public class MainTeleOp extends OpMode {
+@TeleOp(name = "Omnitest", group = "Competition")
+public class OmniTest extends OpMode {
     SlideDrivetrain slideDrive = new SlideDrivetrain();
     StoneIntake stoneIntake = new StoneIntake();
 
