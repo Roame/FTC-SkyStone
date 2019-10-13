@@ -8,17 +8,14 @@ import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class StoneIntake {
     private DcMotor rightMotor, leftMotor;
-    HardwareMap hwmap;
 
-    public StoneIntake(HardwareMap hw){
-        this.hwmap = hw;
-    }
+    public StoneIntake(){}
 
-    public void initStoneIntake(){
-        leftMotor = hwmap.get(DcMotor.class, kIntakeLeftMotor);
-        rightMotor = hwmap.get(DcMotor.class, kIntakeRightMotor);
+    public void initStoneIntake(HardwareMap hw){
+        leftMotor = hw.get(DcMotor.class, kIntakeLeftMotor);
+        rightMotor = hw.get(DcMotor.class, kIntakeRightMotor);
 
-        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

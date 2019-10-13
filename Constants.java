@@ -11,7 +11,7 @@ public final class Constants {
     public static final String kMecanumBLMotor = "BL";
     public static final String kMecanumBRMotor = "BR";
 
-    //For a Omni slide drivetrain
+    //For an Omni slide drivetrain
     public static final String kSlideRightMotor = "right_motor";
     public static final String kSlideLeftMotor = "left_motor";
     public static final String kSlideCenterMotor = "center_motor";
