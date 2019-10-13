@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.StoneIntake;
 
-@TeleOp(name = "Main TeleOp", group = "Competition")
-public class MainTeleOp extends OpMode {
+@TeleOp(name = "Intake Test", group = "Competition")
+public class IntakeTest extends OpMode {
     MecanumDrivetrain mecDrive = new MecanumDrivetrain();
     StoneIntake stoneIntake = new StoneIntake();
 
