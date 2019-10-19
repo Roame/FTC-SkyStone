@@ -5,11 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.StoneIntake;
+import org.firstinspires.ftc.teamcode.Utility.MecInput;
+import org.firstinspires.ftc.teamcode.Utility.MecanumPower;
 
 @TeleOp(name = "Intake Test", group = "Competition")
 public class IntakeTest extends OpMode {
     MecanumDrivetrain mecDrive = new MecanumDrivetrain();
     StoneIntake stoneIntake = new StoneIntake();
+    MecInput input = new MecInput();
 
     @Override
     public void init() {
@@ -19,7 +22,11 @@ public class IntakeTest extends OpMode {
   
     @Override
     public void loop() {
-        mecDrive.MecanumDrive(-gamepad1.right_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        input.TY = -gamepad1.right_stick_y;
+        input.TX = gamepad1.right_stick_x;
+        input.R = gamepad1.left_stick_x;
+
+        mecDrive.MecanumDrive(mecDrive.calcMecanumPower(input));
 
         if(gamepad1.right_bumper) {
             stoneIntake.intakePower(0.5);
