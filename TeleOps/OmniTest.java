@@ -9,12 +9,12 @@ import org.firstinspires.ftc.teamcode.Subsystems.StoneIntake;
 @TeleOp(name = "Omnitest", group = "Competition")
 public class OmniTest extends OpMode {
     SlideDrivetrain slideDrive = new SlideDrivetrain();
-    StoneIntake stoneIntake = new StoneIntake();
+    //StoneIntake stoneIntake = new StoneIntake();
 
     @Override
     public void init() {
         slideDrive.initSlide(hardwareMap);
-        stoneIntake.initStoneIntake(hardwareMap);
+        //stoneIntake.initStoneIntake(hardwareMap);
     }
   
     @Override
