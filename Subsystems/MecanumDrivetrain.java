@@ -2,12 +2,16 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
 
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class MecanumDrivetrain {
     private DcMotor FR, FL, BR, BL;
+    ElapsedTime time = new ElapsedTime();
 
     public MecanumDrivetrain(){}
   
@@ -21,6 +25,8 @@ public class MecanumDrivetrain {
         FL.setDirection(DcMotor.Direction.REVERSE);
         BR.setDirection(DcMotor.Direction.FORWARD);
         BL.setDirection(DcMotor.Direction.REVERSE);
+
+
     }
 
     public void MecanumDrive(float drive, float rotation, float strafe){
@@ -34,4 +40,29 @@ public class MecanumDrivetrain {
         BR.setPower(BRPower);
         BL.setPower(BLPower);
     }
+    public void MecanumStraight(double Speed){
+        FR.setPower(Speed);
+        FL.setPower(Speed);
+        BR.setPower(Speed);
+        BL.setPower(Speed);
+    }
+
+    public void MecanumStrafe(double Speed){
+        FR.setPower(-Speed);
+        FL.setPower(Speed);
+        BR.setPower(Speed);
+        BL.setPower(-Speed);
+    }
+    public void MecanumRotate(double Speed){
+        FR.setPower(-Speed);
+        FL.setPower(+Speed);
+        BR.setPower(-Speed);
+        BL.setPower(+Speed);
+    }
+
+
+
+
+
+
 }

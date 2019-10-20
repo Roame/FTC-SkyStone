@@ -3,72 +3,46 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
+import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 
 import java.io.BufferedReader;
 
 @Autonomous(name = "Test Auto")
 public class TestAuto extends OpMode {
-    DcMotor FR;
-    DcMotor FL;
-    DcMotor BR;
-    DcMotor BL;
     ElapsedTime time = new ElapsedTime();
-
-
-
-
+    MecanumDrivetrain mecDrive = new MecanumDrivetrain();
+    GyroSensor Gyro = new GyroSensor();
 
     @Override
     public void init() {
-        FR = hardwareMap.get(DcMotor.class, "FR");
-        FL = hardwareMap.get(DcMotor.class, "FL");
-        BR = hardwareMap.get(DcMotor.class, "BR");
-        BL = hardwareMap.get(DcMotor.class, "BL");
+        mecDrive.initMecanum(hardwareMap);
         time.reset();
-
-
-
+        Gyro.GyroInit(hardwareMap);
 
     }
 
 
     @Override
-    public void start(){
+    public void start() {
         time.startTime();
     }
 
 
-
     @Override
     public void loop() {
-    if(time.seconds()<5){
-        FR.setPower(0.5);
-        FL.setPower(0.5);
-        BR.setPower(0.5);
-        BL.setPower(0.5);
-    }
-    if(time.seconds()>5 && time.seconds()<10){
-        FR.setPower(0);
-        FL.setPower(0);
-        BR.setPower(0);
-        BL.setPower(0);
-    }
-    if(time.seconds()<15 && time.seconds()>10){
-        FR.setPower(0.5);
-        FL.setPower(-0.5);
-        BR.setPower(0.5);
-        BL.setPower(-0.5);
-    }
-    if(time.seconds()>15){
-        FR.setPower(0);
-        FL.setPower(0);
-        BR.setPower(0);
-        BL.setPower(0);
-
-    }
+        Gyro.readGyro();
+        telemetry.addData("GyroX: ", Gyro.getX());
+        telemetry.addData("GyroY: ", Gyro.getY());
+        telemetry.addData("GyroZ: ", Gyro.getZ());
 
 
+
+        mecDrive.MecanumRotate((Gyro.getZ()*0.01));
 
 
     }
