@@ -64,7 +64,8 @@ public class MecanumDrivetrain {
         vOutput.x = (float) (1 / (Math.pow(kStrafeSpeed, -2) + Math.pow(vInput.y / (vInput.x * kDriveSpeed), 2)));
 
         if (vInput.x == 0) {
-            vOutput.y = 1;
+            vOutput.x = 0;
+            vOutput.y = vInput.y;
         } else {
             vOutput.y = (vInput.y / vInput.x) * vOutput.x;
         }
