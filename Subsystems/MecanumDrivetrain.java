@@ -59,8 +59,28 @@ public class MecanumDrivetrain {
         BR.setPower(-Speed);
         BL.setPower(+Speed);
     }
+    public void MecanumGyroStraight(double Speed, double gyroAngle, double targetGyroAngle){
+        FR.setPower(Speed+(FindRotationAngle(gyroAngle, targetGyroAngle)*kGyroSensitivity));
+        FL.setPower(Speed-(FindRotationAngle(gyroAngle, targetGyroAngle)*kGyroSensitivity));
+        BR.setPower(Speed+(FindRotationAngle(gyroAngle, targetGyroAngle)*kGyroSensitivity));
+        BL.setPower(Speed-(FindRotationAngle(gyroAngle, targetGyroAngle))*kGyroSensitivity);
+    }
+    public void MecanumGyroStrafe(double Speed, double gyroAngle, double targetGyroAngle){
+            FR.setPower(-Speed + (FindRotationAngle(gyroAngle, targetGyroAngle) * kGyroSensitivity));
+            FL.setPower(Speed - (FindRotationAngle(gyroAngle, targetGyroAngle) * kGyroSensitivity));
+            BR.setPower(Speed + (FindRotationAngle(gyroAngle, targetGyroAngle) * kGyroSensitivity));
+            BL.setPower(-Speed - (FindRotationAngle(gyroAngle, targetGyroAngle) * kGyroSensitivity));
+    }
+    public double FindRotationAngle(double current, double target){
+        double difference = Math.abs(current-target);
+        if(difference<180) {
+            return target-current;
+        } else {
+            return 360-(current+target);
+        }
 
 
+    }
 
 
 
