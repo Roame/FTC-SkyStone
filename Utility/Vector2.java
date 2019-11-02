@@ -18,4 +18,8 @@ public class Vector2 {
         //Outputs the angle from the closest axis in the CW direction
         return (float) Math.atan(y/x);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 16203f9d6065faccfaa32d150ca9caa61e1429e6

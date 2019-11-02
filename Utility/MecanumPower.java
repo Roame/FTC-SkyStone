@@ -10,4 +10,8 @@ public class MecanumPower {
         this.BLPower = BLPower;
         this.BRPower = BRPower;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 16203f9d6065faccfaa32d150ca9caa61e1429e6

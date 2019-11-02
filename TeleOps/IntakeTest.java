@@ -19,7 +19,7 @@ public class IntakeTest extends OpMode {
         mecDrive.initMecanum(hardwareMap);
         stoneIntake.initStoneIntake(hardwareMap);
     }
-  
+
     @Override
     public void loop() {
         input.TY = -gamepad1.right_stick_y;
