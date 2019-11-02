@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Utility.MecInput;
 import org.firstinspires.ftc.teamcode.Utility.MecanumPower;
 import org.firstinspires.ftc.teamcode.Utility.Vector2;
 
+import static java.lang.Math.*;
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class MecanumDrivetrain {
@@ -27,7 +27,7 @@ public class MecanumDrivetrain {
         BL.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    public void MecanumDrive(float drive, float rotation, float strafe){
+    public void mecanumDrive(float drive, float rotation, float strafe){
         float FRPower = Range.clip(drive-strafe-rotation, (float) -1.0, (float) 1.0);
         float FLPower = Range.clip(drive+strafe+rotation, (float) -1.0, (float) 1.0);
         float BRPower = Range.clip(drive+strafe-rotation, (float) -1.0, (float) 1.0);
@@ -39,64 +39,65 @@ public class MecanumDrivetrain {
         BL.setPower(BLPower);
     }
 
-    public void MecanumDrive(MecanumPower power){
+    public void mecanumDrive(MecanumPower power){
         FL.setPower(power.FLPower);
         FR.setPower(power.FRPower);
         BL.setPower(power.BLPower);
         BR.setPower(power.BRPower);
     }
 
-    public MecanumPower calcMecanumPower(MecInput input){
+    public void mecanumMappedDrive(Vector2 translation, double rotation){
         MecanumPower output;
-        output = calcTranslation(input);
-        output = calcRotation(input, output);
+        output = calcTranslation(translation);
+        output = calcRotation(output, rotation);
 
-        return output;
+        mecanumDrive(output);
     }
 
-    private MecanumPower calcTranslation(MecInput input) {
+
+
+    public MecanumPower calcTranslation(Vector2 input) {
+        Vector2 mappedVector = new Vector2(), wheelPowerVector = new Vector2();
         MecanumPower output = new MecanumPower();
-        //Converting input to a unit vector the first quadrant
-        Vector2 vInput = new Vector2(Math.abs(input.TX), Math.abs(input.TY));
 
-        //Mapping vInput to an ellipse
-        Vector2 vOutput = new Vector2();
-        vOutput.x = (float) (1 / (Math.pow(kStrafeSpeed, -2) + Math.pow(vInput.y / (vInput.x * kDriveSpeed), 2)));
+        //Finding the distance between the center of an ellipse and its curve:
+        //Ellipse is designed to round out lateral and longitudinal movements
+        mappedVector.magnitude =
+                (kLongitudinalSpeed*kLateralSpeed)/
+                pow((pow(kLongitudinalSpeed*cos(toRadians(input.direction)), 2) + pow(kLateralSpeed*sin(toRadians(input.direction)), 2)), 0.5);
 
-        if (vInput.x == 0) {
-            vOutput.x = 0;
-            vOutput.y = vInput.y;
-        } else {
-            vOutput.y = (vInput.y / vInput.x) * vOutput.x;
-        }
+        mappedVector.magnitude *= input.magnitude; //This is done to scale the vector back to the original x and y proportions
+        mappedVector.direction = input.direction; //Assignment of directionality
 
-        //Reflecting point back to the correct quadrant
-        vOutput.x = Math.copySign(vOutput.x, vInput.x);
-        vOutput.y = Math.copySign(vOutput.y, vInput.y);
+        //Magnitude is scaled by root 2 in order to maintain x and y components of the power relative to the robot:
+        wheelPowerVector.magnitude = mappedVector.magnitude*pow(2,0.5);
+        wheelPowerVector.direction = mappedVector.direction - 45; //Rotating vector by 45 degrees, CW.
+        // This is done to mimic the direction in which mecanum wheels exert force
 
-        //Rotating point 45 degress CW
-        vOutput.x = (float) (vOutput.x*Math.cos(Math.PI/4) + vOutput.y*Math.sin(Math.PI/4));
-        vOutput.y = (float) (vOutput.x*-Math.sin(Math.PI/4) + vOutput.y*Math.cos(Math.PI/4));
-
-        //Take the x and y components and move them to mecanum power for each wheel
-        output.FLPower = output.BRPower = vOutput.x;
-        output.FRPower = output.BLPower = vOutput.y;
+        //Assigning power tp wheels:
+        output.FLPower = output.BRPower = wheelPowerVector.getCoordinates().x;
+        output.BLPower = output.FRPower = wheelPowerVector.getCoordinates().y;
 
         return output;
     }
 
-    private MecanumPower calcRotation(MecInput input, MecanumPower power){
-        //Applying rotation
-        power.FLPower += kRotationSpeed;
-        power.FRPower -= kRotationSpeed;
-        power.BLPower += kRotationSpeed;
-        power.BRPower -= kRotationSpeed;
+    public MecanumPower calcRotation(MecanumPower power, double rotation){
+        double rotationValue = kRotationSpeed*rotation;
 
-        //Trimming power back into the expected range
-        power.FLPower = Range.clip(power.FLPower, -1.0f, 1.0f);
-        power.FRPower = Range.clip(power.FRPower, -1.0f, 1.0f);
-        power.BLPower = Range.clip(power.BLPower, -1.0f, 1.0f);
-        power.BRPower = Range.clip(power.BRPower, -1.0f, 1.0f);
+        //Applying rotation
+        power.FLPower += rotationValue;
+        power.FRPower -= rotationValue;
+        power.BLPower += rotationValue;
+        power.BRPower -= rotationValue;
+
+        //Check if any power exceeds 1 and if so correct the power sent to each wheel
+        double maxPower = max(max(abs(power.FLPower), abs(power.FRPower)),max(abs(power.BLPower), abs(power.BRPower)));
+        if(maxPower > 1){
+            power.FLPower = copySign(abs(power.FLPower)-rotationValue, power.FLPower);
+            power.FRPower = copySign(abs(power.FRPower)-rotationValue, power.FRPower);
+            power.BLPower = copySign(abs(power.BLPower)-rotationValue, power.BLPower);
+            power.BRPower = copySign(abs(power.BRPower)-rotationValue, power.BRPower);
+        }
 
         return power;
     }

@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.Utility;
 
 public class MecanumPower {
-    public float FLPower, FRPower, BLPower, BRPower;
+    public double FLPower, FRPower, BLPower, BRPower;
 
     public MecanumPower(){}
-    public MecanumPower(float FLPower, float FRPower, float BLPower, float BRPower){
+    public MecanumPower(double FLPower, double FRPower, double BLPower, double BRPower){
         this.FLPower = FLPower;
         this.FRPower = FRPower;
         this.BLPower = BLPower;
