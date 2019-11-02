@@ -58,6 +58,5 @@ public class NotImportant extends OpMode {
         backLeft.setPower(leftVal);
         frontRight.setPower(rightVal);
         backRight.setPower(rightVal);
->>>>>>> 16203f9d6065faccfaa32d150ca9caa61e1429e6
     }
 }
