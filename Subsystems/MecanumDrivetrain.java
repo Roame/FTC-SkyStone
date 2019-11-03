@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
-
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class MecanumDrivetrain {
