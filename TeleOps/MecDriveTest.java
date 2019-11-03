@@ -10,43 +10,32 @@ import org.firstinspires.ftc.teamcode.Utility.Vector2;
 
 @TeleOp(name="Mecanum Drive Test")
 public class MecDriveTest extends OpMode {
-    MecanumDrivetrain drivetrain = new MecanumDrivetrain();
+    MecanumDrivetrain drivetrain = new MecanumDrivetrain(telemetry);
     MecanumPower mecPower = new MecanumPower();
     Vector2 input;
     double rotation;
 
     @Override
     public void init() {
-        //drivetrain.initMecanum(hardwareMap);
+        drivetrain.initMecanum(hardwareMap);
+        telemetry.setAutoClear(true);
         input = new Vector2();
     }
 
     @Override
     public void loop() {
 
-        //input.setCoordinates(gamepad1.right_stick_x, -gamepad1.right_stick_y);
-        //rotation = gamepad1.left_stick_x;
-
-        input.setCoordinates(1, 0);
-        rotation = 1;
+        telemetry.addData("Stick X", gamepad1.right_stick_x);
+        telemetry.addData("Stick Y", -gamepad1.right_stick_y);
+        input.setCoordinates(gamepad1.right_stick_x, -gamepad1.right_stick_y);
+        rotation = gamepad1.left_stick_x;
 
         mecPower = drivetrain.calcTranslation(input);
-        telemetry.addData("Trans X: ", mecPower.FLPower);
-        telemetry.addData("Trans Y: ", mecPower.FRPower);
 
         mecPower = drivetrain.calcRotation(drivetrain.calcTranslation(input), rotation);
-        telemetry.addData("With Rot Front Left: ", mecPower.FLPower);
-        telemetry.addData("With Rot Back Left: ", mecPower.BLPower);
-        telemetry.addData("With Rot Front Right: ", mecPower.FRPower);
-        telemetry.addData("With Rot Back Right: ", mecPower.BRPower);
-
-        /*
-        telemetry.addData("Rotation: ", gamepad1.left_stick_x);
-        telemetry.addData("Trans x: ", gamepad1.right_stick_x);
-        telemetry.addData("Trans y: ", -gamepad1.right_stick_y);
 
         drivetrain.mecanumMappedDrive(input, rotation);
-        */
+
 
     }
 }

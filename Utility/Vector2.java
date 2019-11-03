@@ -25,14 +25,10 @@ public class Vector2 {
             }
         } else {
             direction = toDegrees(atan(y/x));
-            if (x > 0 && y<0) {
-                direction += 270;
+            if (x>0 && y<0) {
+                direction += 360;
             } else if (x < 0) {
-                if (y>0) {
-                    direction += 90;
-                } else {
-                    direction += 180;
-                }
+                direction+=180;
             }
         }
     }

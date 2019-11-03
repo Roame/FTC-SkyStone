@@ -11,9 +11,9 @@ public final class Constants {
     public static final String kMecanumBLMotor = "BL";
     public static final String kMecanumBRMotor = "BR";
 
-    public static final float kLateralSpeed = 1.0f; //Should be between 0 and 1.
+    public static final float kLateralSpeed = .75f; //Should be between 0 and 1.
     public static final float kLongitudinalSpeed = 0.5f; //Should be between 0 and 1.
-    public static final float kRotationSpeed = 0.2f; //Indicates how much power it adds or subtracts. Total power difference will be twice this.
+    public static final float kRotationSpeed = 0.4f; //Indicates how much power it adds or subtracts. Total power difference will be twice this.
 
     //For an Omni slide drivetrain
     public static final String kSlideRightMotor = "right_motor";
