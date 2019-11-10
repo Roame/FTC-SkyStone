@@ -41,7 +41,7 @@ public class TestAuto extends OpMode {
         telemetry.addData("GyroZ: ", Gyro.getZ());
         telemetry.addData("Dist: ", Gyro.getZ()-(-90));
         telemetry.addData("Closest distance", mecDrive.FindRotationAngle(Gyro.getZ(), -90));
-        mecDrive.MecanumGyroStraight(.2, Gyro.getZ(), -90);
+        mecDrive.MecanumGyroStraight(.5, Gyro.getZ(), 0);
 
 
 

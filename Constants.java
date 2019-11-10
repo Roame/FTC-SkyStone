@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import org.firstinspires.ftc.teamcode.Utility.Coordinate3D;
+
 public final class Constants {
     private Constants(){
     }
@@ -30,6 +32,14 @@ public final class Constants {
     //Other
 
     public static final double drivePower = 1.0; //This scales the drive power from 0 to 1.
+
+
+
+    //Sensor positions
+    public static final Coordinate3D kFrontDistPos = new Coordinate3D(0,0,0);
+    public static final Coordinate3D kBackDistPos = new Coordinate3D(0,0,0);
+    public static final Coordinate3D kLeftDistPos = new Coordinate3D(0,0,0);
+    public static final Coordinate3D kRightDistPos = new Coordinate3D(0,0,0);
 
 
 

@@ -72,8 +72,8 @@ public class MecanumDrivetrain {
             BL.setPower(-Speed - (FindRotationAngle(gyroAngle, targetGyroAngle) * kGyroSensitivity));
     }
     public double FindRotationAngle(double current, double target){
-        double difference = Math.abs(current-target);
-        if(difference<180) {
+        double absDifference = Math.abs(current-target);
+        if(absDifference<180) {
             return target-current;
         } else {
             return 360-(current+target);
