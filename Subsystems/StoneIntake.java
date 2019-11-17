@@ -11,7 +11,7 @@ public class StoneIntake {
 
     public StoneIntake(){}
 
-    public void initStoneIntake(HardwareMap hw){
+    public void init(HardwareMap hw){
         leftMotor = hw.get(DcMotor.class, kIntakeLeftMotor);
         rightMotor = hw.get(DcMotor.class, kIntakeRightMotor);
 
@@ -21,8 +21,19 @@ public class StoneIntake {
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
+        stop();
+    }
+
+    public void collect(){
+        intakePower(kIntakePower);
+    }
+
+    public void reverse(){
+        intakePower(-kIntakePower);
+    }
+
+    public void stop(){
+        intakePower(0);
     }
 
     public void intakePower(double power){

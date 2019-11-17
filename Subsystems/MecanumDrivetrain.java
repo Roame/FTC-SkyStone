@@ -15,9 +15,7 @@ public class MecanumDrivetrain {
     private DcMotor FR, FL, BR, BL;
     Telemetry telemetry;
 
-    public MecanumDrivetrain(Telemetry telemetry){
-        this.telemetry = telemetry;
-    }
+    public MecanumDrivetrain(){}
 
     public void initMecanum(HardwareMap hw){
         FR = hw.get(DcMotor.class, kMecanumFRMotor);
@@ -31,7 +29,7 @@ public class MecanumDrivetrain {
         BL.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    public void mecanumDrive(float drive, float rotation, float strafe){
+    public void mecanumDrive(float drive, float strafe, float rotation){
         float FRPower = Range.clip(drive-strafe-rotation, (float) -1.0, (float) 1.0);
         float FLPower = Range.clip(drive+strafe+rotation, (float) -1.0, (float) 1.0);
         float BRPower = Range.clip(drive+strafe-rotation, (float) -1.0, (float) 1.0);
@@ -63,8 +61,6 @@ public class MecanumDrivetrain {
     public MecanumPower calcTranslation(Vector2 input) {
         Vector2 mappedVector = new Vector2(), wheelPowerVector = new Vector2();
         MecanumPower output = new MecanumPower();
-        telemetry.addData("input coords", "("+input.getCoordinates().x +"," + input.getCoordinates().y+")");
-        telemetry.addData("Input Direction", input.direction);
 
         //Finding the distance between the center of an ellipse and its curve:
         //Ellipse is designed to round out lateral and longitudinal movements
@@ -74,17 +70,11 @@ public class MecanumDrivetrain {
 
         mappedVector.magnitude *= input.magnitude; //This is done to scale the vector back to the original x and y proportions
         mappedVector.direction = input.direction; //Assignment of directionality
-        telemetry.addData("Mapped Magnitude", mappedVector.magnitude);
-        telemetry.addData("Mapped direction", mappedVector.direction);
 
         //Magnitude is scaled by root 2 in order to maintain x and y components of the power relative to the robot:
         wheelPowerVector.magnitude = mappedVector.magnitude*pow(2,0.5);
         wheelPowerVector.direction = mappedVector.direction - 45; //Rotating vector by 45 degrees, CW.
         // This is done to mimic the direction in which mecanum wheels exert force
-
-        telemetry.addData("Wheel Power Magnitude", wheelPowerVector.magnitude);
-        telemetry.addData("Wheel Power Direction", wheelPowerVector.direction);
-        telemetry.update();
 
         //Assigning power to wheels:
         output.FLPower = output.BRPower = wheelPowerVector.getCoordinates().x;

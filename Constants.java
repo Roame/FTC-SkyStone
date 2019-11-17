@@ -23,6 +23,26 @@ public final class Constants {
     //For the stone intake:
     public static final String kIntakeRightMotor = "IRM";
     public static final String kIntakeLeftMotor = "ILM";
+    public static  final double kIntakePower = 0.5;
+
+    //For stone arm system:
+    public static final String kArmMotor = "arm motor";
+    public static final int kMaxEncoder = -2500;
+    public static final int kMinEncoder = 0;
+
+    //For stone gripper:
+    public static final String kStoneGripperServo = "stone gripper";
+    public static final double kGripperOpenVal = 0;
+    public static final double kGripperClosedVal = 0.22;
+
+    //For the foundation grabber
+    public static final String kFGrabberLeftServo = "foundation left";
+    public static final String kFGrabberRightServo = "foundation right";
+    public static final double kFGrabRightOpen = 0;
+    public static final double kFGrabRightClosed = 0.5;
+    public static final double kFGrabLeftOpen = 1;
+    public static final double kFGrabLeftClosed = 0.5;
+
 
 
 
