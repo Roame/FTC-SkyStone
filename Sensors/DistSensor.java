@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Utility.Coordinate3D;
 
 /**
  * {@link org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance} illustrates how to use the REV Robotics
@@ -20,9 +21,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * @see <a href="http://revrobotics.com">REV Robotics Web Page</a>
  */
 
-public class DistSensor {
-
+public class DistSensor extends SensorPosition {
     private DistanceSensor sensorRange;
+
+    public DistSensor(Coordinate3D coordinates){
+        super(coordinates);
+    }
+
 
     public void DistInit(HardwareMap hw) {
         // you can use this as a regular DistanceSensor.
