@@ -41,6 +41,7 @@ public final class Constants {
     public static final Coordinate3D kLeftDistPos = new Coordinate3D(0,0,0);
     public static final Coordinate3D kRightDistPos = new Coordinate3D(0,0,0);
 
+    public static final double kTickPerInch = 1/0.0221;
 
 
 

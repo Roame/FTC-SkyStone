@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
-
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class MecanumDrivetrain {
@@ -26,6 +24,36 @@ public class MecanumDrivetrain {
         BR.setDirection(DcMotor.Direction.FORWARD);
         BL.setDirection(DcMotor.Direction.REVERSE);
 
+
+    }
+
+    public void initEncoders(){
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+
+    public void SetTargetPosition(int target){
+        FR.setTargetPosition(FR.getCurrentPosition()+target);
+
+        FL.setTargetPosition(FL.getCurrentPosition()+target);
+
+        BR.setTargetPosition(BR.getCurrentPosition()+target);
+
+        BL.setTargetPosition(BL.getCurrentPosition()+target);
 
     }
 
@@ -99,6 +127,9 @@ public class MecanumDrivetrain {
 
     }
 
+    public int InchToTick(Double Inches){
+        return ((int)(Inches*kTickPerInch));
+    }
 
 
 
