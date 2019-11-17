@@ -21,8 +21,8 @@ public final class Constants {
     public static final String kIntakeLeftMotor = "ILM";
 
     //For Gyro Sensor
-    public static final double kGyroSensitivity = 0.03;
-    public static final double kGyroDeadzone = 5;
+    public static final double kGyroSensitivity = 0.02;
+    public static final double kGyroDeadzone = .1;
 
 
 
