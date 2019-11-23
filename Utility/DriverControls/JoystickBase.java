@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Utility.DriverControls;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
-
 public class JoystickBase {
 
     //Drivetrain controls:

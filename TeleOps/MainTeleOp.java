@@ -25,16 +25,19 @@ public class MainTeleOp extends OpMode {
     @Override
     public void init() {
         status.setValue("Initializing Subsystems");
+        telemetry.update();
         drivetrain.initMecanum(hardwareMap);
         //intake.init(hardwareMap);
         //gripper.init(hardwareMap);
         //foundationGrabber.init(hardwareMap);
 
         status.setValue("Ready to Run");
+        telemetry.update();
     }
 
     @Override
     public void loop() {
+        controls.update();
         drivetrain.mecanumDrive(controls.translationY, controls.translationX, controls.rotation);
 
         /*

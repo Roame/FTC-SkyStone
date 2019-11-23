@@ -9,7 +9,10 @@ public class CompetitionControls extends JoystickBase {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
 
+        update();
+    }
 
+    public void update(){
         //Values for mecanum drivetrain
         translationX = gamepad1.left_stick_x;
         translationY = gamepad1.left_stick_y;
