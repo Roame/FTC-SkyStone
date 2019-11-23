@@ -4,19 +4,29 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Subsystems.StoneArmSystem;
+
 @TeleOp(name = "Arm test")
 public class ArmTest extends OpMode {
-    DcMotor motor;
+    StoneArmSystem arm = new StoneArmSystem();
+
+    Telemetry.Item yInput = telemetry.addData("Input", gamepad1.left_stick_y);
+
     @Override
     public void init() {
-        motor = hardwareMap.get(DcMotor.class, "motor");
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.init(hardwareMap);
+        telemetry.setAutoClear(false);
+
+        //yInput = telemetry.addData("Input", gamepad1.left_stick_y);
+        yInput.setValue(gamepad1.left_stick_y);
+        telemetry.update();
     }
 
     @Override
     public void loop() {
-        telemetry.addData("Readings", motor.getCurrentPosition());
+        arm.setTargetPower(gamepad1.left_stick_y);
+
+        yInput.setValue(gamepad1.left_stick_y);
     }
 }
