@@ -9,24 +9,22 @@ import org.firstinspires.ftc.teamcode.Subsystems.StoneArmSystem;
 
 @TeleOp(name = "Arm test")
 public class ArmTest extends OpMode {
-    StoneArmSystem arm = new StoneArmSystem();
-
-    Telemetry.Item yInput = telemetry.addData("Input", gamepad1.left_stick_y);
+    StoneArmSystem arm;
 
     @Override
     public void init() {
+        Telemetry.Item item = telemetry.addData("Ouput", "waiting");
+        arm = new StoneArmSystem(item);
         arm.init(hardwareMap);
-        telemetry.setAutoClear(false);
 
-        //yInput = telemetry.addData("Input", gamepad1.left_stick_y);
-        yInput.setValue(gamepad1.left_stick_y);
+
+        telemetry.setAutoClear(false);
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        arm.setTargetPower(gamepad1.left_stick_y);
-
-        yInput.setValue(gamepad1.left_stick_y);
+        //arm.setTargetPower(-gamepad1.left_stick_y);
+        arm.setPosition(1000);
     }
 }

@@ -13,10 +13,8 @@ import org.firstinspires.ftc.teamcode.Utility.DriverControls.CompetitionControls
 
 @TeleOp(name="Main TeleOp", group = "Competition")
 public class MainTeleOp extends OpMode {
-    CompetitionControls controls = new CompetitionControls(gamepad1, gamepad2);
-
     MecanumDrivetrain drivetrain = new MecanumDrivetrain();
-    //StoneIntake intake = new StoneIntake();
+    StoneIntake intake = new StoneIntake();
     //StoneGripper gripper = new StoneGripper();
     //FoundationGrabber foundationGrabber = new FoundationGrabber();
 
@@ -27,7 +25,7 @@ public class MainTeleOp extends OpMode {
         status.setValue("Initializing Subsystems");
         telemetry.update();
         drivetrain.initMecanum(hardwareMap);
-        //intake.init(hardwareMap);
+        intake.init(hardwareMap);
         //gripper.init(hardwareMap);
         //foundationGrabber.init(hardwareMap);
 
@@ -37,16 +35,19 @@ public class MainTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        controls.update();
-        drivetrain.mecanumDrive(controls.translationY, controls.translationX, controls.rotation);
+        telemetry.addData("Stick y val:", gamepad1.left_stick_y);
+        drivetrain.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
-        /*
-        if(controls.intakeButton.getValue()){
+
+        if(gamepad1.right_bumper){
             intake.collect();
+        } else if (gamepad1.left_bumper){
+            intake.reverse();
         } else {
             intake.stop();
         }
 
+        /*
         if(controls.foundationButton.catchRisingEdge()){
             if(foundationGrabber.getState()== FoundationGrabber.States.OPEN){
                 foundationGrabber.grab();

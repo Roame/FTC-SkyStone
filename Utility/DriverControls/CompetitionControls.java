@@ -15,12 +15,20 @@ public class CompetitionControls extends JoystickBase {
     public void update(){
         //Values for mecanum drivetrain
         translationX = gamepad1.left_stick_x;
-        translationY = gamepad1.left_stick_y;
+        translationY = -gamepad1.left_stick_y;
         rotation = gamepad1.right_stick_x;
 
         //Intake values:
 
 
+        //Foundation values
+        foundationButton.setValue(gamepad2.a);
+
+        //Stone Gripper values
+        gripButton.setValue(gamepad1.right_bumper);
+    }
+
+    private void initControlObjects(){
         //Foundation values
         foundationButton = new Button(gamepad2.a);
 

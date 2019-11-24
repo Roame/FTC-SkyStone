@@ -27,7 +27,7 @@ public final class Constants {
 
     //For stone arm system:
     public static final String kArmMotor = "arm motor";
-    public static final int kArmMaxEncoder = -2500;
+    public static final int kArmMaxEncoder = 2500;
     public static final int kArmMinEncoder = 0;
     public static final int kArmCutOffVal = 500;
     public static final double maxRampTime = 4.0; //Measured in seconds

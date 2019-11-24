@@ -18,6 +18,10 @@ public class JoystickBase {
             this.gamepadButton = gamepadButton;
         }
 
+        public void setValue(boolean input){
+            gamepadButton = input;
+        }
+
         public boolean getValue(){
             return gamepadButton;
         }
