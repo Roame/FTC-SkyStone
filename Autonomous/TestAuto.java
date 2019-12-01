@@ -21,11 +21,15 @@ public class TestAuto extends OpMode {
     Telemetry.Item position = telemetry.addData("Position", 0);
     public ElapsedTime time = new ElapsedTime();
     public GyroSensor gyro = new GyroSensor();
+    public enum States {
+        STEP1, STEP2, STEP3, STEP4
+    }
+    States state = States.STEP1;
     @Override
     public void init() {
         MecDrive.initMecanum(hardwareMap);
-        MecDrive.initEncoders();
         gyro.GyroInit(hardwareMap);
+        MecDrive.initEncoders();
     }
 
     @Override
@@ -43,34 +47,40 @@ public class TestAuto extends OpMode {
     @Override
     public void loop() {
         gyro.readGyro();
-        if(time.seconds()<4) {
-            MecDrive.SetTargetPosition(MecDrive.InchToTick(25.0));
-            MecDrive.MecanumStraight(0.25);
+
+
+
+
+
+        switch (state){
+            case STEP1:
+                MecDrive.SetTargetPosition(MecDrive.InchToTick(5000.0));
+                MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                MecDrive.MecanumStraight(0.2);
+                if(!MecDrive.FR.isBusy()){
+                    //state = States.STEP2;
+                }
+
+                break;
+
+            case STEP2:
+
+                MecDrive.SetTargetPosition(MecDrive.InchToTick(-500.0));
+                MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                MecDrive.MecanumStraight(-0.2);
+                if(!MecDrive.FR.isBusy()){
+                    state = States.STEP3;
+                }
+                break;
+
+            case STEP3:
+            MecDrive.MecanumStraight(0);
+                break;
+
         }
-        if(time.seconds()>4 && time.seconds() < 5){
-            MecDrive.MecanumGyroRotate(gyro.getZ(), 90);
-        }
-        if(time.seconds()>5 && time.seconds()<9) {
-            MecDrive.SetTargetPosition(MecDrive.InchToTick(25.0));
-            MecDrive.MecanumStraight(0.25);
-        }
-        if(time.seconds()>9 && time.seconds() < 10){
-            MecDrive.MecanumGyroRotate(gyro.getZ(), 90);
-        }
-        if(time.seconds()>10 && time.seconds() < 14) {
-            MecDrive.SetTargetPosition(MecDrive.InchToTick(25.0));
-            MecDrive.MecanumStraight(0.25);
-        }
-        if(time.seconds()>14 && time.seconds() < 15){
-            MecDrive.MecanumGyroRotate(gyro.getZ(), 90);
-        }
-        if(time.seconds()>15 && time.seconds()<19) {
-            MecDrive.SetTargetPosition(MecDrive.InchToTick(25.0));
-            MecDrive.MecanumStraight(0.25);
-        }
-        if(time.seconds()>19 && time.seconds() < 20){
-            MecDrive.MecanumGyroRotate(gyro.getZ(), 90);
-        }
+        telemetry.addData("State: ", state);
+        telemetry.addData("Busy: ", MecDrive.BR.isBusy());
         telemetry.addData("GyroZ :", gyro.getZ());
+        telemetry.addData("Mode: ", MecDrive.FR.getMode());
     }
 }

@@ -24,7 +24,7 @@ public final class Constants {
 
     //For Gyro Sensor
     public static final double kGyroSensitivity = 0.02;
-    public static final double kGyroDeadzone = .1;
+    public static final double kGyroDeadzone = .01;
 
 
 

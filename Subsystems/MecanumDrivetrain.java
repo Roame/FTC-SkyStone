@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class MecanumDrivetrain {
-    private DcMotor FR, FL, BR, BL;
+    public DcMotor FR, FL, BR, BL;
     ElapsedTime time = new ElapsedTime();
 
     public MecanumDrivetrain(){}
@@ -30,19 +30,15 @@ public class MecanumDrivetrain {
     public void initEncoders(){
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 
@@ -108,7 +104,6 @@ public class MecanumDrivetrain {
         }
     }
     public void MecanumGyroRotate(double gyroAngle, double targetGyroAngle){
-
         if(Math.abs(0.5*(FindRotationAngle(gyroAngle, targetGyroAngle)) * kGyroSensitivity)>kGyroDeadzone) {
             FR.setPower(0.5*(FindRotationAngle(gyroAngle, targetGyroAngle) * kGyroSensitivity));
             FL.setPower(-0.5*(FindRotationAngle(gyroAngle, targetGyroAngle) * kGyroSensitivity));
@@ -120,10 +115,12 @@ public class MecanumDrivetrain {
             BR.setPower(0);
             BL.setPower(0);
         }
-
-
-
-
+    }
+    public void MecanumSetMode(DcMotor.RunMode mode){
+        FR.setMode(mode);
+        FL.setMode(mode);
+        BR.setMode(mode);
+        BL.setMode(mode);
 
     }
 
