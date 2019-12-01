@@ -7,19 +7,38 @@ import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class StoneGripper {
     private Servo gripServo;
+    public enum States {
+        OPENED, CLOSED
+    }
+    private States cState = States.CLOSED;
 
     public StoneGripper(){}
 
     public void init (HardwareMap hardwareMap){
         gripServo = hardwareMap.get(Servo.class, kStoneGripperServo);
-        gripServo.setPosition(kGripperOpenVal);
+        openGripper();
     }
 
     public void closeGripper(){
         gripServo.setPosition(kGripperClosedVal);
+        cState = States.CLOSED;
     }
 
     public void openGripper(){
         gripServo.setPosition(kGripperOpenVal);
+        cState = States.OPENED;
+    }
+
+    public void toggleState(){
+        if(cState==States.CLOSED){
+            openGripper();
+        }
+        if(cState==States.OPENED){
+            closeGripper();
+        }
+    }
+
+    public States getState(){
+        return cState;
     }
 }

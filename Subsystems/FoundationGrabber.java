@@ -8,7 +8,7 @@ import static org.firstinspires.ftc.teamcode.Constants.*;
 public class FoundationGrabber {
     Servo leftServo, rightServo;
     public enum States{
-        OPEN, CLOSED;
+        OPEN, CLOSED
     }
     States state;
 
@@ -31,6 +31,15 @@ public class FoundationGrabber {
         leftServo.setPosition(kFGrabLeftOpen);
         rightServo.setPosition(kFGrabRightOpen);
         state = States.OPEN;
+    }
+
+    public void toggleState(){
+        if(state == States.OPEN){
+            grab();
+        }
+        if(state == States.CLOSED){
+            open();
+        }
     }
 
     public States getState(){
