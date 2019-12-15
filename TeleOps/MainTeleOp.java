@@ -14,17 +14,16 @@ import org.firstinspires.ftc.teamcode.Utility.RisingEdge;
 
 @TeleOp(name="Main TeleOp", group = "Competition")
 public class MainTeleOp extends OpMode {
-    ElapsedTime time = new ElapsedTime();
-
     MecanumDrivetrain drivetrain = new MecanumDrivetrain();
     StoneIntake intake = new StoneIntake();
-    //StoneArmSystem arm = new StoneArmSystem(); //Remove the Item from this class once done testing
+    StoneArmSystem arm = new StoneArmSystem();
     StoneGripper gripper = new StoneGripper();
-    RisingEdge gEdge = new RisingEdge();
     FoundationGrabber foundationGrabber = new FoundationGrabber();
+
+    RisingEdge gEdge = new RisingEdge();
     RisingEdge fEdge = new RisingEdge();
 
-    Telemetry.Item status = telemetry.addData("Status", "Starting");
+    Telemetry.Item status = telemetry.addData("Status", "");
 
     @Override
     public void init() {
@@ -33,7 +32,7 @@ public class MainTeleOp extends OpMode {
 
         drivetrain.initMecanum(hardwareMap);
         intake.init(hardwareMap);
-        //arm.init(hardwareMap);
+        arm.init(hardwareMap);
         gripper.init(hardwareMap);
         foundationGrabber.init(hardwareMap);
 
@@ -45,8 +44,6 @@ public class MainTeleOp extends OpMode {
     public void start() {
         status.setValue("Starting");
         telemetry.update();
-        //start the timer
-        time.reset();
         super.start();
     }
 
@@ -55,8 +52,7 @@ public class MainTeleOp extends OpMode {
         status.setValue("Running");
         drivetrain.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
-
-        //Intake controls
+        //Intake controls ===========================================================
         if(gamepad1.right_bumper){
             intake.collect();
         } else if (gamepad1.left_bumper){
@@ -66,19 +62,24 @@ public class MainTeleOp extends OpMode {
         }
 
 
-        //Arm system controls:
-        //arm.scrollPosition(-gamepad2.left_stick_y, time.seconds());
+        //Arm system controls =======================================================
+        arm.scrollPosition(-gamepad2.left_stick_y, getRuntime());
 
 
-        //Arm claw/gripper controls:
+        //Arm claw/gripper controls =================================================
         if(gEdge.catchRisingEdge(gamepad2.a)){
             gripper.toggleState();
         }
 
 
-        //Toggle for the foundation grabber servos.
+        //Toggle for the foundation grabber servos ==================================
         if(fEdge.catchRisingEdge(gamepad2.b)){
             foundationGrabber.toggleState();
         }
+    }
+
+    @Override
+    public void stop(){
+        status.setValue("Stopped");
     }
 }
