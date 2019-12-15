@@ -21,7 +21,7 @@ public class StoneArmSystem {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
+        armMotor.setDirection(DcMotor.Direction.FORWARD);
     }
 
     double pTime, pPos, pScale;
@@ -30,7 +30,7 @@ public class StoneArmSystem {
     public void scrollPosition(double rateScale, double timeSeconds){
         if(rateScale != 0 && !approachingBounds(rateScale)) {
             pHoldingState = false;
-            int rate = 50; //Encoder ticks per second
+            int rate = 700; //Encoder ticks per second
             double kP = 0.000001, kI = 0.000005;
 
             if (pTime == 0) {

@@ -32,8 +32,7 @@ public class StoneGripper {
     public void toggleState(){
         if(cState==States.CLOSED){
             openGripper();
-        }
-        if(cState==States.OPENED){
+        } else if(cState==States.OPENED){
             closeGripper();
         }
     }

@@ -16,7 +16,7 @@ public class StoneIntake {
         leftMotor = hw.get(DcMotor.class, kIntakeLeftMotor);
         rightMotor = hw.get(DcMotor.class, kIntakeRightMotor);
 
-        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

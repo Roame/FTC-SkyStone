@@ -36,8 +36,7 @@ public class FoundationGrabber {
     public void toggleState(){
         if(state == States.OPEN){
             grab();
-        }
-        if(state == States.CLOSED){
+        } else if(state == States.CLOSED){
             open();
         }
     }

@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.Utility.ControlSystems;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class PIDController {
     double kP, kI, kD;
     double totalError, pError;
     double target;
     double output;
-    ElapsedTime time;
 
     public PIDController(){}
     public PIDController(double P, double I, double D){

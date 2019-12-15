@@ -27,7 +27,7 @@ public final class Constants {
 
     //For stone arm system:
     public static final String kArmMotor = "arm motor";
-    public static final int kArmMaxEncoder = 2500;
+    public static final int kArmMaxEncoder = 2100;
     public static final int kArmMinEncoder = 0;
     public static final int kArmCutOffVal = 500;
     public static final double maxRampTime = 4.0; //Measured in seconds
@@ -42,10 +42,10 @@ public final class Constants {
     //For the foundation grabber
     public static final String kFGrabberLeftServo = "foundation left";
     public static final String kFGrabberRightServo = "foundation right";
-    public static final double kFGrabRightOpen = 0;
+    public static final double kFGrabRightOpen = 1.0;
     public static final double kFGrabRightClosed = 0.5;
-    public static final double kFGrabLeftOpen = 1;
-    public static final double kFGrabLeftClosed = 0.5;
+    public static final double kFGrabLeftOpen = 0.28;
+    public static final double kFGrabLeftClosed = 0.56;
 
 
 

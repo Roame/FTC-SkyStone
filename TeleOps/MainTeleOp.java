@@ -20,8 +20,7 @@ public class MainTeleOp extends OpMode {
     StoneGripper gripper = new StoneGripper();
     FoundationGrabber foundationGrabber = new FoundationGrabber();
 
-    RisingEdge gEdge = new RisingEdge();
-    RisingEdge fEdge = new RisingEdge();
+    boolean gLastState = false, fLastState = false;
 
     Telemetry.Item status = telemetry.addData("Status", "");
 
@@ -63,19 +62,27 @@ public class MainTeleOp extends OpMode {
 
 
         //Arm system controls =======================================================
-        arm.scrollPosition(-gamepad2.left_stick_y, getRuntime());
+        if(gamepad2.dpad_up){
+            arm.scrollPosition(0.5, getRuntime());
+        } else if(gamepad2.dpad_down){
+            arm.scrollPosition(-0.5, getRuntime());
+        } else {
+            arm.scrollPosition(0, getRuntime());
+        }
 
 
         //Arm claw/gripper controls =================================================
-        if(gEdge.catchRisingEdge(gamepad2.a)){
+        if(gamepad2.a != gLastState && gamepad2.a){
             gripper.toggleState();
         }
+        gLastState = gamepad2.a;
 
 
         //Toggle for the foundation grabber servos ==================================
-        if(fEdge.catchRisingEdge(gamepad2.b)){
+        if(gamepad2.b != fLastState && gamepad2.b){
             foundationGrabber.toggleState();
         }
+        fLastState = gamepad2.b;
     }
 
     @Override
