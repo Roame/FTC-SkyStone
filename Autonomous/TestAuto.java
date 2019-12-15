@@ -54,23 +54,30 @@ public class TestAuto extends OpMode {
 
         switch (state){
             case STEP1:
-                MecDrive.SetTargetPosition(MecDrive.InchToTick(5000.0));
+                boolean targetSet = true;
+                if(targetSet) {
+                    MecDrive.SetTargetPos ition(MecDrive.InchToTick(5.0));
+                    targetSet = false;
+                }
                 MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 MecDrive.MecanumStraight(0.2);
-                if(!MecDrive.FR.isBusy()){
-                    //state = States.STEP2;
+                if(MecDrive.FR.getPower()==0){
+                    state = States.STEP2;
+                    targetSet = true;
                 }
 
                 break;
 
             case STEP2:
-
-                MecDrive.SetTargetPosition(MecDrive.InchToTick(-500.0));
-                MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                MecDrive.MecanumStraight(-0.2);
-                if(!MecDrive.FR.isBusy()){
-                    state = States.STEP3;
-                }
+//
+//                MecDrive.SetTargetPosition(MecDrive.InchToTick(-500.0));
+//                MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                MecDrive.MecanumStraight(-0.2);
+                MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                MecDrive.MecanumStraight(0.0);
+//                if(!MecDrive.FR.isBusy()){
+//                    state = States.STEP3;
+//                }
                 break;
 
             case STEP3:
@@ -79,8 +86,10 @@ public class TestAuto extends OpMode {
 
         }
         telemetry.addData("State: ", state);
-        telemetry.addData("Busy: ", MecDrive.BR.isBusy());
-        telemetry.addData("GyroZ :", gyro.getZ());
+        telemetry.addData("FR Busy: ", MecDrive.FR.getPower()!=0);
+        telemetry.addData("GyroZ: ", gyro.getZ());
         telemetry.addData("Mode: ", MecDrive.FR.getMode());
+        telemetry.addData("Target Pos: ", MecDrive.FR.getCurrentPosition());
+        telemetry.addData("5-5: ", 0);
     }
 }
