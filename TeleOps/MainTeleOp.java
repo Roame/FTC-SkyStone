@@ -2,15 +2,14 @@ package org.firstinspires.ftc.teamcode.TeleOps;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.StoneArmSystem;
 import org.firstinspires.ftc.teamcode.Subsystems.StoneGripper;
 import org.firstinspires.ftc.teamcode.Subsystems.StoneIntake;
-import org.firstinspires.ftc.teamcode.Utility.RisingEdge;
 
 @TeleOp(name="Main TeleOp", group = "Competition")
 public class MainTeleOp extends OpMode {
@@ -21,6 +20,7 @@ public class MainTeleOp extends OpMode {
     FoundationGrabber foundationGrabber = new FoundationGrabber();
 
     boolean gLastState = false, fLastState = false;
+    double drivePower;
 
     Telemetry.Item status = telemetry.addData("Status", "");
 
@@ -49,7 +49,13 @@ public class MainTeleOp extends OpMode {
     @Override
     public void loop() {
         status.setValue("Running");
-        drivetrain.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
+        if(gamepad1.a){
+            drivePower = Constants.kDriveReducedSpeed;
+        } else {
+            drivePower = Constants.kDriveMaxSpeed;
+        }
+        drivetrain.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower);
 
         //Intake controls ===========================================================
         if(gamepad1.right_bumper){

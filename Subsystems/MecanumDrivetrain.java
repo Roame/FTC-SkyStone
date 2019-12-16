@@ -30,11 +30,11 @@ public class MecanumDrivetrain {
         BL.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    public void mecanumDrive(float drive, float strafe, float rotation){
-        float FRPower = Range.clip(drive-strafe-rotation, (float) -1.0, (float) 1.0);
-        float FLPower = Range.clip(drive+strafe+rotation, (float) -1.0, (float) 1.0);
-        float BRPower = Range.clip(drive+strafe-rotation, (float) -1.0, (float) 1.0);
-        float BLPower = Range.clip(drive-strafe+rotation, (float) -1.0, (float) 1.0);
+    public void mecanumDrive(float drive, float strafe, float rotation, double maxPower){
+        float FRPower = Range.clip(drive-strafe-rotation, (float) -1.0, (float) 1.0)*((float) maxPower);
+        float FLPower = Range.clip(drive+strafe+rotation, (float) -1.0, (float) 1.0)*((float) maxPower);
+        float BRPower = Range.clip(drive+strafe-rotation, (float) -1.0, (float) 1.0)*((float) maxPower);
+        float BLPower = Range.clip(drive-strafe+rotation, (float) -1.0, (float) 1.0)*((float) maxPower);
 
         FR.setPower(FRPower);
         FL.setPower(FLPower);
