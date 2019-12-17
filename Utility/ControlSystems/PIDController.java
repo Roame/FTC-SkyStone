@@ -8,6 +8,7 @@ public class PIDController {
     private double output;
     private double frameLength = 25; //measured in ms
     private double errorTolerance=100;
+    private boolean resetEnabled = true;
 
     public PIDController(){}
     public PIDController(double P, double I, double D){
@@ -25,7 +26,9 @@ public class PIDController {
     public void setTarget(double target){
         if(this.target != target) {
             this.target = target;
-            totalError = 0;
+            if(resetEnabled) {
+                totalError = 0;
+            }
         }
     }
 
@@ -50,6 +53,10 @@ public class PIDController {
             pError = error;
             pTime = cTime;
         }
+    }
+
+    public void setReset(boolean state){
+        resetEnabled = state;
     }
 
     public double getOutput(){

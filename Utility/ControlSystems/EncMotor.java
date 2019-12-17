@@ -8,7 +8,8 @@ public class EncMotor {
     DcMotor motor;
     String name;
     PIDController positionPID, velocityPID;
-    double cruiseVelocity, acceleration = 0.1;
+    double cruiseVelocity, cRampVelocity, acceleration = 0, accelStartTime = 0, initVelocity=0;
+    boolean accelerationStarted = false, accelerating = false;
     double pTime, cVelocity;
     int pPos;
     int motorTicksPerRev;
@@ -19,7 +20,7 @@ public class EncMotor {
     }
 
     private enum Mode {
-        POWER, DEF_POS, PID_POS, PID_VEL
+        POWER, DEF_POS, PID_POS, PID_VEL, RAMP_VEL
     }
 
     Mode mode;
@@ -55,17 +56,51 @@ public class EncMotor {
         mode = Mode.PID_VEL;
     }
 
+    public void setVelocityRamp(double radiansPerSec){
+        velocityPID.setReset(false);
+        if(cruiseVelocity != radiansPerSec) {
+            cruiseVelocity = radiansPerSec;
+            initVelocity = cRampVelocity;
+            acceleration = Math.copySign(acceleration, cruiseVelocity-initVelocity); //Set directionality of the acceleration
+            mode = Mode.RAMP_VEL;
+            accelerationStarted = false;
+        }
+    }
+
     public void update(){
         switch (mode){
             case PID_POS:
-                    positionPID.update(motor.getCurrentPosition());
-                    motor.setPower(positionPID.getOutput());
+                positionPID.update(motor.getCurrentPosition());
+                motor.setPower(positionPID.getOutput());
                 break;
 
             case PID_VEL:
-                    velocityPID.update(getVelocity());
-                    motor.setPower(velocityPID.getOutput());
+                velocityPID.update(getVelocity());
+                motor.setPower(velocityPID.getOutput());
                 break;
+
+            case RAMP_VEL:
+                if(!accelerationStarted && !accelerating){
+                    accelerationStarted = true;
+                    accelStartTime = System.currentTimeMillis();
+                    accelerating = true;
+                }
+
+                if(accelerating){
+                    double runningTime = (System.currentTimeMillis()-accelStartTime)/velocityPID.getFrameLength(); //Calculate running time and convert to frames
+                    cRampVelocity = initVelocity+(acceleration*runningTime);
+                    if((cRampVelocity>cruiseVelocity && acceleration >0) || (cRampVelocity<cruiseVelocity && acceleration < 0)){
+                         cRampVelocity = cruiseVelocity;
+                         accelerating = false;
+                    }
+                    velocityPID.setTarget(cRampVelocity);
+                }
+
+                velocityPID.update(getVelocity());
+                motor.setPower(velocityPID.getOutput());
+                break;
+
+
 
             default:
                 //Do nothing
@@ -113,11 +148,14 @@ public class EncMotor {
             deltaT /= velocityPID.getFrameLength(); //convert to ms
             int cPos = motor.getCurrentPosition();
             cVelocity = (((double)(cPos-pPos))/deltaT);
-            System.out.println(cVelocity + ", "+ deltaT);
             pPos = cPos;
             pTime = cTime;
         }
         return cVelocity;
+    }
+
+    public void setAcceleration(double radsPerSecPerSec){
+        acceleration = radsPerSecPerSecToTicksPerFramePerFrame(radsPerSecPerSec);
     }
 
 
@@ -127,5 +165,9 @@ public class EncMotor {
 
     private int radsPerSecToTicksPerFrame(double radsPS){
         return (int)(radsPS*(motorTicksPerRev/(2.0*Math.PI))*(velocityPID.getFrameLength()/1000.0));
+    }
+
+    private double radsPerSecPerSecToTicksPerFramePerFrame(double radsPSPS){
+        return (radsToEncoderTicks(radsPSPS)*Math.pow((velocityPID.getFrameLength()/1000.0),2.0));
     }
 }
