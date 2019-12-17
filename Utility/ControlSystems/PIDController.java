@@ -6,7 +6,8 @@ public class PIDController {
     private double totalError, pError, pTime;
     private double target = 0;
     private double output;
-    private double erroTolerance=100;
+    private double frameLength = 25; //measured in ms
+    private double errorTolerance=100;
 
     public PIDController(){}
     public PIDController(double P, double I, double D){
@@ -37,14 +38,14 @@ public class PIDController {
         double deltaTime = cTime - pTime;
 
         //Designed to limit the number of updates that occur. This should improve control of the motor
-        if(deltaTime >= 100) {
-            deltaTime /= 100.0; //Used to convert deltaT to units of 100 ms
+        if(deltaTime >= frameLength) {
+            deltaTime /= frameLength; //Used to convert deltaT to units of the frame
             double error = target - reading;
             double deltaError = error - pError;
             double dError = deltaError / deltaTime;
             totalError += error * deltaTime;
 
-            output = kP * error + kI * totalError + kD * dError;
+            output = (kP * error) + (kI * totalError) + (kD * dError);
 
             pError = error;
             pTime = cTime;
@@ -54,4 +55,5 @@ public class PIDController {
     public double getOutput(){
         return output;
     }
+    public double getFrameLength(){return frameLength;}
 }

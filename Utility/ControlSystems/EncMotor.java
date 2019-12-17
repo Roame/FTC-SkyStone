@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utility.ControlSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class EncMotor {
@@ -9,7 +8,7 @@ public class EncMotor {
     DcMotor motor;
     String name;
     PIDController positionPID, velocityPID;
-    double cruiseVelocity, acceleration;
+    double cruiseVelocity, acceleration = 0.1;
     double pTime, cVelocity;
     int pPos;
     int motorTicksPerRev;
@@ -52,7 +51,7 @@ public class EncMotor {
     }
 
     public void setVelocityPID(double radiansPerSec){
-        velocityPID.setTarget(radsPerSecToTicksPer100ms(radiansPerSec));
+        velocityPID.setTarget(radsPerSecToTicksPerFrame(radiansPerSec));
         mode = Mode.PID_VEL;
     }
 
@@ -110,9 +109,13 @@ public class EncMotor {
             pTime = cTime;
         }
         double deltaT = cTime-pTime;
-        if(deltaT >= 100){
-            deltaT /= 100.0; //convert to ms
-            cVelocity = (((double)(motor.getCurrentPosition()-pPos))/deltaT);
+        if(deltaT >= velocityPID.getFrameLength()){
+            deltaT /= velocityPID.getFrameLength(); //convert to ms
+            int cPos = motor.getCurrentPosition();
+            cVelocity = (((double)(cPos-pPos))/deltaT);
+            System.out.println(cVelocity + ", "+ deltaT);
+            pPos = cPos;
+            pTime = cTime;
         }
         return cVelocity;
     }
@@ -122,7 +125,7 @@ public class EncMotor {
         return (int)(radians*(motorTicksPerRev/(2.0*Math.PI)));
     }
 
-    private int radsPerSecToTicksPer100ms(double radsPS){
-        return (int)(radsPS*(motorTicksPerRev/(2.0*Math.PI))*(0.1));
+    private int radsPerSecToTicksPerFrame(double radsPS){
+        return (int)(radsPS*(motorTicksPerRev/(2.0*Math.PI))*(velocityPID.getFrameLength()/1000.0));
     }
 }
