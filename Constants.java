@@ -32,6 +32,8 @@ public final class Constants {
     public static final int kArmMaxEncoder = 2100;
     public static final int kArmMinEncoder = 0;
     public static final int kArmCutOffVal = 500;
+    public static final double kArmP = 0.0032, kArmI = 0.0016, kArmD = 0.0;
+    public static final double kArmMaxVelocity = Math.PI/4.0, kArmAcceleration = Math.PI*0.75;
     public static final double maxRampTime = 4.0; //Measured in seconds
     public static final double rampRate = 1/maxRampTime;
     public static final double kArmMaxSpeed = 0.5;
@@ -44,10 +46,10 @@ public final class Constants {
     //For the foundation grabber
     public static final String kFGrabberLeftServo = "foundation left";
     public static final String kFGrabberRightServo = "foundation right";
-    public static final double kFGrabRightOpen = 1.0;
-    public static final double kFGrabRightClosed = 0.5;
-    public static final double kFGrabLeftOpen = 0.28;
-    public static final double kFGrabLeftClosed = 0.56;
+    public static final double kFGrabRightOpen = 0.33;
+    public static final double kFGrabRightClosed = 0.46;
+    public static final double kFGrabLeftOpen = 0.59;
+    public static final double kFGrabLeftClosed = 0.39;
 
 
 

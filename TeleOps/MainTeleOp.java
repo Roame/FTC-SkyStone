@@ -69,12 +69,13 @@ public class MainTeleOp extends OpMode {
 
         //Arm system controls =======================================================
         if(gamepad2.dpad_up){
-            arm.scrollPosition(0.5, getRuntime());
+            arm.moveUp();
         } else if(gamepad2.dpad_down){
-            arm.scrollPosition(-0.5, getRuntime());
+            arm.moveDown();
         } else {
-            arm.scrollPosition(0, getRuntime());
+            arm.holdPosition();
         }
+        arm.update();
 
 
         //Arm claw/gripper controls =================================================

@@ -8,11 +8,15 @@ public class EncMotor {
     DcMotor motor;
     String name;
     PIDController positionPID, velocityPID;
+    int upperBound, lowerBound;
     double cruiseVelocity, cRampVelocity, acceleration = 0, accelStartTime = 0, initVelocity=0;
     boolean accelerationStarted = false, accelerating = false;
     double pTime, cVelocity;
     int pPos;
     int motorTicksPerRev;
+    private enum States {
+        CRUISING, APPROACHING_UPPERBOUND, APPROACHING_LOWERBOUND
+    }
 
     public EncMotor(String name, int ticksPerRev){
         this.name = name;
@@ -57,14 +61,19 @@ public class EncMotor {
     }
 
     public void setVelocityRamp(double radiansPerSec){
+        double convertedSpeed = radsPerSecToTicksPerFrame(radiansPerSec);
         velocityPID.setReset(false);
-        if(cruiseVelocity != radiansPerSec) {
-            cruiseVelocity = radiansPerSec;
-            initVelocity = cRampVelocity;
-            acceleration = Math.copySign(acceleration, cruiseVelocity-initVelocity); //Set directionality of the acceleration
-            mode = Mode.RAMP_VEL;
-            accelerationStarted = false;
+        States cState = getState();
+        if(cState == States.CRUISING || (cState == States.APPROACHING_LOWERBOUND && radiansPerSec>=0) || (cState==States.APPROACHING_UPPERBOUND && radiansPerSec<=0)) {
+            //Only run what is in here when the input won't cause the motor to pass the set bounds.
+            if(cruiseVelocity != convertedSpeed) {
+                cruiseVelocity = convertedSpeed;
+                initVelocity = cRampVelocity; //This is done in order to make transition from one acceleration to another smoother
+                acceleration = Math.copySign(acceleration, cruiseVelocity-initVelocity); //Set directionality of the acceleration
+                accelerationStarted = false;
+            }
         }
+        mode = Mode.RAMP_VEL;
     }
 
     public void update(){
@@ -80,7 +89,13 @@ public class EncMotor {
                 break;
 
             case RAMP_VEL:
-                if(!accelerationStarted && !accelerating){
+                States cState = getState();
+                if(cState != States.CRUISING && ((cruiseVelocity > 0 && cState == States.APPROACHING_UPPERBOUND)||(cruiseVelocity < 0 && cState == States.APPROACHING_LOWERBOUND))){
+                    setVelocityRamp(0.0); //Try to accelerate to zero before passing bound
+
+                }
+
+                if(!accelerationStarted){ //removed && !accelerating as this doesn't apply
                     accelerationStarted = true;
                     accelStartTime = System.currentTimeMillis();
                     accelerating = true;
@@ -95,6 +110,7 @@ public class EncMotor {
                     }
                     velocityPID.setTarget(cRampVelocity);
                 }
+                System.out.println(cRampVelocity + ", " + getVelocity());
 
                 velocityPID.update(getVelocity());
                 motor.setPower(velocityPID.getOutput());
@@ -156,6 +172,58 @@ public class EncMotor {
 
     public void setAcceleration(double radsPerSecPerSec){
         acceleration = radsPerSecPerSecToTicksPerFramePerFrame(radsPerSecPerSec);
+    }
+
+    public void setEncoderLimits(int minimumEncoder, int maximumEncoder){
+        this.lowerBound = minimumEncoder;
+        this.upperBound = maximumEncoder;
+    }
+
+
+    private States getState(){
+        if(upperBound-motor.getCurrentPosition() < 0){
+            return States.APPROACHING_UPPERBOUND;
+        } else if (motor.getCurrentPosition()-lowerBound < 0){
+            return  States.APPROACHING_LOWERBOUND;
+        } else {
+            double velocity = cRampVelocity;
+            double deceleration;
+            if (velocity == 0) {
+                deceleration = acceleration; //Just in case velocity equals 0, could cause confusion otherwise
+            } else {
+                deceleration = Math.copySign(acceleration, -velocity);
+            }
+            double distance;
+
+            States concernedBound = States.CRUISING;
+            int bound;
+            if (velocity > 0) {
+                bound = upperBound;
+                concernedBound = States.APPROACHING_UPPERBOUND;
+            } else if (velocity < 0) {
+                bound = lowerBound;
+                concernedBound = States.APPROACHING_LOWERBOUND;
+            }
+            distance = Math.abs((-velocity * velocity) / (2.0 * deceleration));
+
+            double distanceLeft = getDistToBound() - distance;
+            if (distanceLeft <= 0) {
+                return concernedBound;
+            } else {
+                return States.CRUISING;
+            }
+        }
+    }
+
+    private int getDistToBound(){
+        double velocity = getVelocity();
+        if(velocity>0){
+            return upperBound-motor.getCurrentPosition();
+        } else if (velocity < 0){
+            return motor.getCurrentPosition()-lowerBound;
+        } else {
+            return 10000; //Placeholder value
+        }
     }
 
 

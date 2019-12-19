@@ -7,21 +7,42 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Utility.ControlSystems.EncMotor;
 
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class StoneArmSystem {
-    public DcMotor armMotor;
+    public EncMotor armMotor = new EncMotor("arm motor", 3892);
 
     public StoneArmSystem(){
     }
 
     public void init(HardwareMap hardwareMap){
-        armMotor = hardwareMap.get(DcMotor.class, kArmMotor);
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armMotor.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.init(hardwareMap);
+        armMotor.configVelocityPID(kArmP, kArmI, kArmD);
+        armMotor.setAcceleration(kArmAcceleration);
+        armMotor.setEncoderLimits(kArmMinEncoder, kArmMaxEncoder);
+        armMotor.setVelocityRamp(0.0);
+    }
+
+    public void moveUp(){
+        setVelocity(kArmMaxVelocity);
+    }
+
+    public void moveDown(){
+        setVelocity(-kArmMaxVelocity);
+    }
+
+    public void holdPosition(){
+        setVelocity(0.0);
+    }
+
+    public void setVelocity(double radPerSec){
+        armMotor.setVelocityRamp(radPerSec);
+    }
+
+    public void update(){
+        armMotor.update();
     }
 
     double pTime, pPos, pScale;
