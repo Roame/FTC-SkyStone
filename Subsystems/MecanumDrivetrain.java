@@ -21,24 +21,37 @@ public class MecanumDrivetrain {
 
         FR.setDirection(DcMotor.Direction.FORWARD);
         FL.setDirection(DcMotor.Direction.REVERSE);
-        BR.setDirection(DcMotor.Direction.FORWARD);
-        BL.setDirection(DcMotor.Direction.REVERSE);
+        BR.setDirection(DcMotor.Direction.REVERSE);
+        BL.setDirection(DcMotor.Direction.FORWARD);
 
 
     }
 
     public void initEncoders(){
+        FR.setTargetPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        FL.setTargetPosition(0);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        BR.setTargetPosition(0);
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        BL.setTargetPosition(0);
         BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    }
+
+    public void setPower(double power){
+        FR.setPower(power);
+        FL.setPower(power);
+        BR.setPower(power);
+        BL.setPower(power);
+
 
     }
 
