@@ -43,6 +43,13 @@ public final class Constants {
 
     public static final double kTickPerInch = 1/0.0221;
 
+    //For the foundation grabber:
+    public static final String kFGrabberLeftServo = "foundation left";
+    public static final String kFGrabberRightServo = "foundation right";
+    public static final double kFGrabRightOpen = 0.33;
+    public static final double kFGrabRightClosed = 0.46;
+    public static final double kFGrabLeftOpen = 0.59;
+    public static final double kFGrabLeftClosed = 0.39;
 
 
 
