@@ -30,19 +30,19 @@ public class MecanumDrivetrain {
     public void initEncoders(){
         FR.setTargetPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         FL.setTargetPosition(0);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         BR.setTargetPosition(0);
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         BL.setTargetPosition(0);
         BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_TO_POSITION );
 
     }
 
@@ -56,13 +56,13 @@ public class MecanumDrivetrain {
     }
 
     public void SetTargetPosition(int target){
-        FR.setTargetPosition(FR.getCurrentPosition()+target);
+        FR.setTargetPosition(target);
 
-        FL.setTargetPosition(FL.getCurrentPosition()+target);
+        FL.setTargetPosition(target);
 
-        BR.setTargetPosition(BR.getCurrentPosition()+target);
+        BR.setTargetPosition(target);
 
-        BL.setTargetPosition(BL.getCurrentPosition()+target);
+        BL.setTargetPosition(target);
 
     }
 
@@ -141,8 +141,10 @@ public class MecanumDrivetrain {
         return ((int)(Inches*kTickPerInch));
     }
 
-
-
+    public boolean EncoderEqualsTarget(double tolerance, double target){
+        double sumOfPos = FR.getCurrentPosition()+FL.getCurrentPosition()+BR.getCurrentPosition()+BL.getCurrentPosition();
+        return sumOfPos>(target-tolerance)*4 && sumOfPos<(target+tolerance)*4;
+    }
 
 
 

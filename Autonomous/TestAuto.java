@@ -2,25 +2,22 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 
-import java.io.BufferedReader;
-import java.nio.channels.DatagramChannel;
+
+
 
 @Autonomous(name = "Test Auto")
 public class TestAuto extends OpMode {
     public MecanumDrivetrain MecDrive = new MecanumDrivetrain();
     Telemetry.Item position = telemetry.addData("Position", 0);
     public ElapsedTime time = new ElapsedTime();
-//    public GyroSensor gyro = new GyroSensor();
+    public GyroSensor gyro = new GyroSensor();
     public enum States {
         STEP1, STEP2, STEP3, STEP4
     }
@@ -28,7 +25,7 @@ public class TestAuto extends OpMode {
     @Override
     public void init() {
         MecDrive.initMecanum(hardwareMap);
-//        gyro.GyroInit(hardwareMap);
+        gyro.GyroInit(hardwareMap);
         MecDrive.initEncoders();
 
 
@@ -55,16 +52,16 @@ public class TestAuto extends OpMode {
         time.startTime();
         telemetry.addData("Mode: ", MecDrive.FR.getMode());
         MecDrive.MecanumSetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER );
-        MecDrive.SetTargetPosition(100);
+        MecDrive.SetTargetPosition(1000);
         MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_TO_POSITION);
-  //      MecDrive.setPower(1);
+        MecDrive.setPower(1);
 
     }
 
 
     @Override
     public void loop() {
-        //gyro.readGyro();
+        gyro.readGyro();
 
 
 
@@ -72,14 +69,18 @@ public class TestAuto extends OpMode {
 
         switch (state){
             case STEP1:
+            if(MecDrive.EncoderEqualsTarget(5, 1000)){
 
-//                MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//                MecDrive.setPower(1);
-                //MecDrive.MecanumStraight(0.5);
-
+                state=States.STEP2;
+                MecDrive.SetTargetPosition(0);
+                MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
                 break;
 
             case STEP2:
+            MecDrive.MecanumGyroRotate(gyro.getZ(), 45);
+
+
 
                 break;
 
@@ -96,6 +97,7 @@ public class TestAuto extends OpMode {
 
 
         telemetry.addData("State: ", state);
+        telemetry.addData("gyro Z: ", gyro.getZ());
         telemetry.addData("FR Busy: ", MecDrive.FR.getPower()!=0);
         telemetry.addData("FL Busy: ", MecDrive.FL.getPower()!=0);
         telemetry.addData("BR Busy: ", MecDrive.BR.getPower()!=0);
