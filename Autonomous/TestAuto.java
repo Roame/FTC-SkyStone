@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
+import org.firstinspires.ftc.teamcode.Subsystems.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 
 
@@ -18,6 +19,7 @@ public class TestAuto extends OpMode {
     Telemetry.Item position = telemetry.addData("Position", 0);
     public ElapsedTime time = new ElapsedTime();
     public GyroSensor gyro = new GyroSensor();
+    public FoundationGrabber foundationGrabber = new FoundationGrabber();
     public enum States {
         STEP1, STEP2, STEP3, STEP4
     }
@@ -27,7 +29,7 @@ public class TestAuto extends OpMode {
         MecDrive.initMecanum(hardwareMap);
         gyro.GyroInit(hardwareMap);
         MecDrive.initEncoders();
-
+        foundationGrabber.init(hardwareMap);
 
         telemetry.addData("InitMode: ", MecDrive.FR.getMode());
 
@@ -78,8 +80,8 @@ public class TestAuto extends OpMode {
                 break;
 
             case STEP2:
-            MecDrive.MecanumGyroRotate(gyro.getZ(), 45);
-
+            //MecDrive.MecanumGyroRotate(gyro.getZ(), 45);
+                foundationGrabber.grab();
 
 
                 break;
