@@ -23,8 +23,8 @@ public final class Constants {
     public static final String kIntakeLeftMotor = "ILM";
 
     //For Gyro Sensor
-    public static final double kGyroSensitivity = 0.75;
-    public static final double kGyroDeadzone = .01;
+    public static final double kGyroSensitivity = 0.09;
+    public static final double kGyroDeadzone = .03;
 
 
 
@@ -46,7 +46,7 @@ public final class Constants {
     //For the foundation grabber:
     public static final String kFGrabberLeftServo = "foundation left";
     public static final String kFGrabberRightServo = "foundation right";
-    public static final double kFGrabRightOpen = 0.33;
+    public static final double kFGrabRightOpen = 0.33  ;
     public static final double kFGrabRightClosed = 0.46;
     public static final double kFGrabLeftOpen = 0.59;
     public static final double kFGrabLeftClosed = 0.39;

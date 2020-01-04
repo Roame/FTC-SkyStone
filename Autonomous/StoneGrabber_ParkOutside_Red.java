@@ -6,22 +6,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
 import org.firstinspires.ftc.teamcode.Subsystems.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 
+import static java.lang.Thread.sleep;
 
 
-
-@Autonomous(name = "Test Auto")
-public class TestAuto extends OpMode {
+@Autonomous(name = "StoneGrabber_ParkOutside_Red")
+public class StoneGrabber_ParkOutside_Red extends OpMode {
     public MecanumDrivetrain MecDrive = new MecanumDrivetrain();
     Telemetry.Item position = telemetry.addData("Position", 0);
     public ElapsedTime time = new ElapsedTime();
     public GyroSensor gyro = new GyroSensor();
-    public FoundationGrabber foundationGrabber = new FoundationGrabber();
     public enum States {
-        STEP1, STEP2, STEP3, STEP4
+        STEP1, STEP2, STEP3, STEP4, STEP5, STEP6, STEP7, STEP8, STEP9, STEP10, STEP11, STEP12, STEP13, STEP14, STEP15, STEP16, STEP17, STEP18, STEP19, STEP20
     }
     States state = States.STEP1;
     @Override
@@ -29,9 +29,9 @@ public class TestAuto extends OpMode {
         MecDrive.initMecanum(hardwareMap);
         gyro.GyroInit(hardwareMap);
         MecDrive.initEncoders();
-        foundationGrabber.init(hardwareMap);
 
         telemetry.addData("InitMode: ", MecDrive.FR.getMode());
+
 
     }
 
@@ -40,8 +40,8 @@ public class TestAuto extends OpMode {
         telemetry.addData("InitFR :", MecDrive.FR.getCurrentPosition());
         telemetry.addData("InitBR :", MecDrive.BR.getCurrentPosition());
         telemetry.addData("InitFL :", MecDrive.FL.getCurrentPosition());
-        telemetry.addData("InitBL :", MecDrive.BL.getCurrentPosition());
 
+        telemetry.addData("InitBL :", MecDrive.BL.getCurrentPosition());
 
 
 
@@ -53,10 +53,6 @@ public class TestAuto extends OpMode {
         time.reset();
         time.startTime();
         telemetry.addData("Mode: ", MecDrive.FR.getMode());
-        MecDrive.MecanumSetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER );
-        MecDrive.SetTargetPosition(1000);
-        MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_TO_POSITION);
-        MecDrive.setPower(1);
 
     }
 
@@ -71,25 +67,12 @@ public class TestAuto extends OpMode {
 
         switch (state){
             case STEP1:
-            if(MecDrive.EncoderEqualsTarget(5, 1000)){
 
-                state=States.STEP2;
-                MecDrive.SetTargetPosition(0);
-                MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
-                break;
 
-            case STEP2:
-            //MecDrive.MecanumGyroRotate(gyro.getZ(), 45);
-                foundationGrabber.grab();
+
 
 
                 break;
-
-            case STEP3:
-
-                break;
-
         }
 
 
@@ -100,6 +83,7 @@ public class TestAuto extends OpMode {
 
         telemetry.addData("State: ", state);
         telemetry.addData("gyro Z: ", gyro.getZ());
+        telemetry.addData("Time: ", time.milliseconds());
         telemetry.addData("FR Busy: ", MecDrive.FR.getPower()!=0);
         telemetry.addData("FL Busy: ", MecDrive.FL.getPower()!=0);
         telemetry.addData("BR Busy: ", MecDrive.BR.getPower()!=0);
@@ -115,6 +99,5 @@ public class TestAuto extends OpMode {
         telemetry.addData("FR POS", MecDrive.FR.getCurrentPosition());
         telemetry.addData("FL POS", MecDrive.FL.getCurrentPosition());
         telemetry.addData("BR POS", MecDrive.BR.getCurrentPosition());
-        telemetry.addData("BL POS", MecDrive.BL.getCurrentPosition());
-    }
+        telemetry.addData("BL POS", MecDrive.BL.getCurrentPosition()); }
 }
