@@ -190,7 +190,7 @@ public class FoundationMover_ParkOutside_Red extends OpMode {
                 break;
             case STEP9:
                 MecDrive.MecanumGyroRotate(gyro.getZ(), 0);
-                if(gyro.getZ()>-1 && gyro.getZ()<1){
+                if(gyro.getZ()>-2 && gyro.getZ()<2){
                     MecDrive.initEncoders();
                     MecDrive.SetTargetPosition(550);
                     MecDrive.setPower(.8);

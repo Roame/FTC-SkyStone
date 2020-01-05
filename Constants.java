@@ -21,6 +21,7 @@ public final class Constants {
     //For the stone intake:
     public static final String kIntakeRightMotor = "IRM";
     public static final String kIntakeLeftMotor = "ILM";
+    public static  final double kIntakePower = 0.5;
 
     //For Gyro Sensor
     public static final double kGyroSensitivity = 0.09;
@@ -50,6 +51,9 @@ public final class Constants {
     public static final double kFGrabRightClosed = 0.46;
     public static final double kFGrabLeftOpen = 0.59;
     public static final double kFGrabLeftClosed = 0.39;
+
+
+
 
 
 

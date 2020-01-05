@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
 import org.firstinspires.ftc.teamcode.Subsystems.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
+import org.firstinspires.ftc.teamcode.Subsystems.StoneIntake;
 
 import static java.lang.Thread.sleep;
 
@@ -20,6 +21,7 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
     Telemetry.Item position = telemetry.addData("Position", 0);
     public ElapsedTime time = new ElapsedTime();
     public GyroSensor gyro = new GyroSensor();
+    public StoneIntake stoneIntake = new StoneIntake();
     public enum States {
         STEP1, STEP2, STEP3, STEP4, STEP5, STEP6, STEP7, STEP8, STEP9, STEP10, STEP11, STEP12, STEP13, STEP14, STEP15, STEP16, STEP17, STEP18, STEP19, STEP20
     }
@@ -29,7 +31,7 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
         MecDrive.initMecanum(hardwareMap);
         gyro.GyroInit(hardwareMap);
         MecDrive.initEncoders();
-
+        stoneIntake.init(hardwareMap);
         telemetry.addData("InitMode: ", MecDrive.FR.getMode());
 
 
@@ -53,7 +55,10 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
         time.reset();
         time.startTime();
         telemetry.addData("Mode: ", MecDrive.FR.getMode());
-
+        MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        MecDrive.initEncoders();
+        MecDrive.SetTargetPosition(2900);
+        MecDrive.setPower(.75);
     }
 
 
@@ -65,8 +70,17 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
 
 
 
-        switch (state){
+        switch (state) {
             case STEP1:
+
+                if(MecDrive.EncoderEqualsTarget(5, 2900)){
+                    state=States.STEP2;
+                }
+
+                break;
+
+            case STEP2:
+
 
 
 

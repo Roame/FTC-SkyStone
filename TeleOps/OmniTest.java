@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeleOps;
+/* package org.firstinspires.ftc.teamcode.TeleOps;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -25,3 +25,4 @@ public class OmniTest extends OpMode {
         slideDrive.SlideDrive(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y);
     }
 }
+*/
