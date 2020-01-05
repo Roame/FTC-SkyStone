@@ -57,8 +57,9 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
         telemetry.addData("Mode: ", MecDrive.FR.getMode());
         MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         MecDrive.initEncoders();
-        MecDrive.SetTargetPosition(2900);
+        MecDrive.SetTargetPosition(2300);
         MecDrive.setPower(.75);
+        stoneIntake.collect();
     }
 
 
@@ -73,14 +74,32 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
         switch (state) {
             case STEP1:
 
-                if(MecDrive.EncoderEqualsTarget(5, 2900)){
+                if(MecDrive.EncoderEqualsTarget(5, 2300)){
+                    MecDrive.setPower(0);
+                    MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     state=States.STEP2;
                 }
 
                 break;
 
             case STEP2:
+            MecDrive.MecanumGyroRotate(gyro.getZ(), 32);
+            if(gyro.getZ()>30 && gyro.getZ()<34){
 
+                MecDrive.initEncoders();
+                MecDrive.SetTargetPosition(2000);
+                MecDrive.setPower(.5);
+                state = States.STEP3;
+                time.reset();
+                time.startTime();
+            }
+
+                break;
+
+            case STEP3:
+                if(MecDrive.EncoderEqualsTarget(5, 1000)){
+                    stoneIntake.stop();
+                }
 
 
 
