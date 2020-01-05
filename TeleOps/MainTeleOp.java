@@ -19,7 +19,8 @@ public class MainTeleOp extends OpMode {
     StoneGripper gripper = new StoneGripper();
     FoundationGrabber foundationGrabber = new FoundationGrabber();
 
-    boolean gLastState = false, fLastState = false, driveLastState = false, driveReversed = false;
+    boolean gLastState = false, fLastState = false, driveLastState = false, driveReversed = false, headLastState = false;
+
     double drivePower = Constants.kDriveMaxSpeed;
 
     Telemetry.Item status = telemetry.addData("Status", "");
@@ -87,21 +88,29 @@ public class MainTeleOp extends OpMode {
         } else {
             arm.holdPosition();
         }
-        arm.update();
+
+        //Toggle for the servo at the end of the arm
+        if (gamepad2.b && !headLastState) {
+            arm.toggleHeadTarget();
+        }
+        headLastState = gamepad2.b;
+
+        arm.update(); //Important for regulating/monitoring the arm as a whole
+
 
 
         //Arm claw/gripper controls =================================================
-        if(gamepad2.a != gLastState && gamepad2.a){
+        if(gamepad2.a && !gLastState){
             gripper.toggleState();
         }
         gLastState = gamepad2.a;
 
 
         //Toggle for the foundation grabber servos ==================================
-        if(gamepad2.b != fLastState && gamepad2.b){
+        if(gamepad2.x && !fLastState){
             foundationGrabber.toggleState();
         }
-        fLastState = gamepad2.b;
+        fLastState = gamepad2.x;
     }
 
     @Override

@@ -24,13 +24,17 @@ public final class Constants {
     //For stone arm system:
     public static final String kArmMotor = "arm motor";
     public static final int kArmMaxEncoder = 2100;
+    public static final int kArmActivatedPosition = 1000; //This is where it is safe to rotate the encoder head.
     public static final int kArmMinEncoder = 0;
     public static final double kArmP = 0.0032, kArmI = 0.0016, kArmD = 0.0;
     public static final double kArmMaxVelocity = Math.PI/3.0, kArmAcceleration = Math.PI*1.0; //Was originally: velocity = pi/4, acceleration = pi*0.75;
+    public static final String kArmServo = "arm servo";
+    public static final double kArmServoStraight = 0.6;
+    public static final double kArmServoRotated = 0.23;
 
     //For stone gripper:
     public static final String kStoneGripperServo = "stone gripper";
-    public static final double kGripperOpenVal = 0;
+    public static final double kGripperOpenVal = 0.03;
     public static final double kGripperClosedVal = 0.22;
 
     //For the foundation grabber:

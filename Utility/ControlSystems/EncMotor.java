@@ -110,7 +110,6 @@ public class EncMotor {
                     }
                     velocityPID.setTarget(cRampVelocity);
                 }
-                System.out.println(cRampVelocity + ", " + getVelocity());
 
                 velocityPID.update(getVelocity());
                 motor.setPower(velocityPID.getOutput());
