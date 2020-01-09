@@ -5,6 +5,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.Utility.MecInput;
+import org.firstinspires.ftc.teamcode.Utility.MecanumPower;
+import org.firstinspires.ftc.teamcode.Utility.Vector2;
+
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class MecanumDrivetrain {
@@ -139,8 +143,8 @@ public class MecanumDrivetrain {
         return ((int)(Inches*kTickPerInch));
     }
 
-    public boolean EncoderEqualsTarget(double tolerance, double target){
-        double sumOfPos = FR.getCurrentPosition()+FL.getCurrentPosition()+BR.getCurrentPosition()+BL.getCurrentPosition();
-        return sumOfPos>(target-tolerance)*4 && sumOfPos<(target+tolerance)*4;
+    public boolean EncoderEqualsTarget(double tolerance, double target) {
+        double sumOfPos = FR.getCurrentPosition() + FL.getCurrentPosition() + BR.getCurrentPosition() + BL.getCurrentPosition();
+        return sumOfPos > (target - tolerance) * 4 && sumOfPos < (target + tolerance) * 4;
     }
 }
