@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class FoundationGrabber {
-    Servo leftServo, rightServo;
+    public Servo leftServo, rightServo;
     public enum States{
         OPEN, CLOSED
     }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import org.firstinspires.ftc.teamcode.Utility.Coordinate3D;
+
 public final class Constants {
     private Constants(){
     }
@@ -19,7 +21,7 @@ public final class Constants {
     //For the stone intake:
     public static final String kIntakeRightMotor = "IRM";
     public static final String kIntakeLeftMotor = "ILM";
-    public static  final double kIntakePower = 0.75;
+    public static  final double kIntakePower = 0.5;
 
     //For stone arm system:
     public static final String kArmMotor = "arm motor";
@@ -46,4 +48,18 @@ public final class Constants {
     public static final double kFGrabRightClosed = 0.46;
     public static final double kFGrabLeftOpen = 0.59;
     public static final double kFGrabLeftClosed = 0.39;
+
+
+    //For Gyro Sensor
+    public static final double kGyroSensitivity = 0.09;
+    public static final double kGyroDeadzone = .03;
+
+    //Sensor positions
+    public static final Coordinate3D kFrontDistPos = new Coordinate3D(0,0,0);
+    public static final Coordinate3D kBackDistPos = new Coordinate3D(0,0,0);
+    public static final Coordinate3D kLeftDistPos = new Coordinate3D(0,0,0);
+    public static final Coordinate3D kRightDistPos = new Coordinate3D(0,0,0);
+
+    public static final double kTickPerInch = 1/0.0221;
+
 }
