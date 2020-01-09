@@ -18,6 +18,8 @@ public class StoneArmSystem {
     public HeadState cState = HeadState.STRAIGHT;
     public HeadState tState = HeadState.STRAIGHT;
 
+    private double adjustmentPos = 0.0;
+
     public StoneArmSystem(){
     }
 
@@ -54,10 +56,15 @@ public class StoneArmSystem {
         armMotor.update();
 
         //Designed to protect the servo from colliding with the arm
-        if(armMotor.getCurrentPosition() >= kArmActivatedPosition && tState == HeadState.ROTATED){
-            rotateHead();
+        if(armMotor.getCurrentPosition() >= kArmActivatedPosition) {
+            if (tState == HeadState.ROTATED) {
+                headServo.setPosition(kArmServoRotated + adjustmentPos);
+            } else {
+                headServo.setPosition(kArmServoStraight + adjustmentPos);
+            }
         } else {
-            straightenHead(); //Always default to straight as this is a safe position to be in
+            straightenHead();
+            adjustmentPos = 0; // Reset the adjustment
         }
     }
 
@@ -87,5 +94,9 @@ public class StoneArmSystem {
         } else if (tState == HeadState.ROTATED){
             tState = HeadState.STRAIGHT;
         }
+    }
+
+    public void adjustHeadDeg(double degree){
+        adjustmentPos += degree*kArmServoDecPerDeg;
     }
 }

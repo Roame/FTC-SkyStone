@@ -19,7 +19,8 @@ public class MainTeleOp extends OpMode {
     StoneGripper gripper = new StoneGripper();
     FoundationGrabber foundationGrabber = new FoundationGrabber();
 
-    boolean gLastState = false, fLastState = false, driveLastState = false, driveReversed = false, headLastState = false;
+    boolean gLastState = false, fLastState = false, driveLastState = false, driveReversed = false, headLastState = false,
+            adjustRightLastState = false, adjustLeftLastState = false;
 
     double drivePower = Constants.kDriveMaxSpeed;
 
@@ -94,6 +95,15 @@ public class MainTeleOp extends OpMode {
             arm.toggleHeadTarget();
         }
         headLastState = gamepad2.b;
+
+        //Head adjustment controls:
+        if(gamepad2.right_bumper && !adjustRightLastState){
+            arm.adjustHeadDeg(Constants.kArmServoAdjustmentDeg);
+        } else if(gamepad2.left_bumper &&!adjustLeftLastState){
+            arm.adjustHeadDeg(-Constants.kArmServoAdjustmentDeg);
+        }
+        adjustRightLastState = gamepad2.right_bumper;
+        adjustLeftLastState = gamepad2.left_bumper;
 
         arm.update(); //Important for regulating/monitoring the arm as a whole
 

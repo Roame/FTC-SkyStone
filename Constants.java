@@ -31,6 +31,8 @@ public final class Constants {
     public static final String kArmServo = "arm servo";
     public static final double kArmServoStraight = 0.6;
     public static final double kArmServoRotated = 0.23;
+    public static final double kArmServoAdjustmentDeg = 5.0;
+    public static final double kArmServoDecPerDeg = 1.0/270.0;
 
     //For stone gripper:
     public static final String kStoneGripperServo = "stone gripper";
