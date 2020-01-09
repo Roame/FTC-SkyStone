@@ -98,9 +98,9 @@ public class MainTeleOp extends OpMode {
 
         //Head adjustment controls:
         if(gamepad2.right_bumper && !adjustRightLastState){
-            arm.adjustHeadDeg(Constants.kArmServoAdjustmentDeg);
-        } else if(gamepad2.left_bumper &&!adjustLeftLastState){
             arm.adjustHeadDeg(-Constants.kArmServoAdjustmentDeg);
+        } else if(gamepad2.left_bumper &&!adjustLeftLastState){
+            arm.adjustHeadDeg(Constants.kArmServoAdjustmentDeg);
         }
         adjustRightLastState = gamepad2.right_bumper;
         adjustLeftLastState = gamepad2.left_bumper;
