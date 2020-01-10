@@ -26,6 +26,8 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
         STEP1, STEP2, STEP3, STEP4, STEP5, STEP6, STEP7, STEP8, STEP9, STEP10, STEP11, STEP12, STEP13, STEP14, STEP15, STEP16, STEP17, STEP18, STEP19, STEP20
     }
     States state = States.STEP1;
+    int tolerance = 20;
+
     @Override
     public void init() {
         MecDrive.initMecanum(hardwareMap);
@@ -74,7 +76,7 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
         switch (state) {
             case STEP1:
 
-                if(MecDrive.EncoderEqualsTarget(5, 2300)){
+                if(MecDrive.EncoderEqualsTarget(tolerance, 2300)){
                     MecDrive.setPower(0);
                     MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     state=States.STEP2;
@@ -97,7 +99,7 @@ public class StoneGrabber_ParkOutside_Red extends OpMode {
                 break;
 
             case STEP3:
-                if(MecDrive.EncoderEqualsTarget(5, 1000)){
+                if(MecDrive.EncoderEqualsTarget(tolerance, 1000)){
                     stoneIntake.stop();
                 }
 

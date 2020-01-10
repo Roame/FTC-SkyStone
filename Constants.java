@@ -21,7 +21,7 @@ public final class Constants {
     //For the stone intake:
     public static final String kIntakeRightMotor = "IRM";
     public static final String kIntakeLeftMotor = "ILM";
-    public static  final double kIntakePower = 0.5;
+    public static  final double kIntakePower = 0.75;
 
     //For stone arm system:
     public static final String kArmMotor = "arm motor";

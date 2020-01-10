@@ -25,6 +25,8 @@ public class FoundationMover_ParkInside_Red extends OpMode {
         STEP1, STEP2, STEP3, STEP4, STEP5, STEP6, STEP7, STEP8, STEP9, STEP10, STEP11, STEP12, STEP13, STEP14, STEP15, STEP16, STEP17, STEP18, STEP19, STEP20
     }
     States state = States.STEP1;
+    int tolerance = 20;
+
     @Override
     public void init() {
         MecDrive.initMecanum(hardwareMap);
@@ -75,7 +77,7 @@ public class FoundationMover_ParkInside_Red extends OpMode {
             case STEP1:
 
 
-                if(MecDrive.EncoderEqualsTarget(5, -3100)){
+                if(MecDrive.EncoderEqualsTarget(tolerance, -3100)){
                     MecDrive.setPower(0);
                     state=States.STEP2;
                     foundationGrabber.grab();
@@ -106,7 +108,7 @@ public class FoundationMover_ParkInside_Red extends OpMode {
 
             case STEP3:
 
-                if(MecDrive.EncoderEqualsTarget(5, -3200)){
+                if(MecDrive.EncoderEqualsTarget(tolerance, -3200)){
                     state=States.STEP4;
                     MecDrive.SetTargetPosition(-1000);
                 }
@@ -117,7 +119,7 @@ public class FoundationMover_ParkInside_Red extends OpMode {
 
             case STEP4:
 
-                if(MecDrive.EncoderEqualsTarget(5, -1000)){
+                if(MecDrive.EncoderEqualsTarget(tolerance, -1000)){
                     MecDrive.setPower(0);
                     MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     state=States.STEP5;
@@ -147,7 +149,7 @@ public class FoundationMover_ParkInside_Red extends OpMode {
                 break;
 
             case STEP6:
-                if(MecDrive.EncoderEqualsTarget(5, -700)){
+                if(MecDrive.EncoderEqualsTarget(tolerance, -700)){
                     state=States.STEP7;
                     MecDrive.setPower(0);
                 }
@@ -177,7 +179,7 @@ public class FoundationMover_ParkInside_Red extends OpMode {
                     MecDrive.SetTargetPosition(1000);
                     MecDrive.setPower(.8);
                 }
-                if(MecDrive.EncoderEqualsTarget(5, 1000)){
+                if(MecDrive.EncoderEqualsTarget(tolerance, 1000)){
                     MecDrive.setPower(0);
                     MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     state=States.STEP9;
@@ -203,7 +205,7 @@ public class FoundationMover_ParkInside_Red extends OpMode {
 
             case STEP10:
 
-                if(MecDrive.EncoderEqualsTarget(5, -1200)){
+                if(MecDrive.EncoderEqualsTarget(tolerance, -1200)){
                     MecDrive.setPower(0);
                     MecDrive.MecanumSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     state=States.STEP11;
