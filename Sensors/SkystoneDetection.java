@@ -36,7 +36,7 @@ public class SkystoneDetection {
     private String VUFORIA_KEY = "AYQm9TP/////AAABmYpSmsQUzUVDjNybjkVPbyIp9yc54vbjClj2gejGyzSynKlhIM27rjvcLSets+kkRSjJQHwjQthPMdznBs3LT2KzhfNMIY+Lo2+Re55QOBuXoZO4n3Zf4xl0cgykm6oiGYn/g6Bubhps5UPnJPGMGhXr3LWQxcOr5Fl6F98EKogoawMQiGO6WhACPETjUuL0x9XgHdd6+6ZhOSEtVMZMaEuxm/LB+Q6XPIdEzDNKxKiUUvWXH6zdErl/SyR1kXC6vnDTaIIKqulcOw2yyiXystyG971lXUb+3VSBfaL3kKsFNO/1a1XkcShd6p8QxA1qRSirPheLG+Nqrv/q88+SyjF3ApIA7O2EeIjB9QovmA64";
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
 
-    private TFObjectDetector TFOD;
+    public TFObjectDetector TFOD;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -80,6 +80,16 @@ public class SkystoneDetection {
         }
     }
 
+    public String getRecognitions(){
+        List<Recognition> recognitions = TFOD.getRecognitions();
+        String output = "";
+        if(recognitions != null){
+        for(Recognition recognition : recognitions){
+            output += recognition.getLabel() +": "+(recognition.getLeft()/recognition.getRight()) + " \n";
+        }
+        return output;
+    }
+
 
     class sortByPos implements Comparator<Recognition> {
         @Override
@@ -89,7 +99,7 @@ public class SkystoneDetection {
     }
 
     public SkystonePattern getSensedPattern() {
-        List<Recognition> updatedRecognitions = TFOD.getUpdatedRecognitions();
+        List<Recognition> updatedRecognitions = TFOD.getRecognitions();
 
         if (updatedRecognitions != null) {
             if (updatedRecognitions.size() != 6) {
