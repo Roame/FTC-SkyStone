@@ -13,9 +13,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 public class GyroSensor {
-        //----------------------------------------------------------------------------------------------
-        // State
-        //----------------------------------------------------------------------------------------------
+
+        private static GyroSensor instance = null;
+
+        public static GyroSensor getInstance(){
+            if(instance == null){
+                instance = new GyroSensor();
+            }
+            return instance;
+        }
 
         // The IMU sensor object
         BNO055IMU imu;
@@ -61,6 +67,15 @@ public class GyroSensor {
     }
     public float getZ(){
         return angles.firstAngle;
+    }
+
+    public static double getDifference(double angle1, double angle2){
+        //Positive output indicates CCW rotation from angle 1 to angle 2
+        //Negative output indicates CW rotation from angle 1 to angle 2
+        double difference = angle2-angle1;
+        double output = Math.abs(difference) <= 180 ? difference : Math.copySign(360, difference) - difference;
+
+        return output;
     }
 
 }

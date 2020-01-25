@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.Sensors.GyroSensor;
 import org.firstinspires.ftc.teamcode.Subsystems.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.StoneArmSystem;
@@ -22,7 +23,9 @@ public class MainTeleOp extends OpMode {
     boolean gLastState = false, fLastState = false, driveLastState = false, driveReversed = false, headLastState = false,
             adjustRightLastState = false, adjustLeftLastState = false;
 
-    double drivePower = Constants.kDriveMaxSpeed;
+    double drivePower;
+
+    GyroSensor gyro = GyroSensor.getInstance();
 
     Telemetry.Item status = telemetry.addData("Status", "");
 
@@ -36,6 +39,8 @@ public class MainTeleOp extends OpMode {
         arm.init(hardwareMap);
         gripper.init(hardwareMap);
         foundationGrabber.init(hardwareMap);
+
+        gyro.GyroInit(hardwareMap);
 
         status.setValue("Ready to Run");
         telemetry.update();
@@ -66,9 +71,9 @@ public class MainTeleOp extends OpMode {
         }
         driveLastState = gamepad1.a;
         if(!driveReversed) {
-            drivetrain.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower); //Controls for forward driving
+            drivetrain.correctedDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower); //Controls for forward driving
         } else {
-            drivetrain.mecanumDrive(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower); //Controls for reversed driving
+            drivetrain.correctedDrive(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower); //Controls for reversed driving
         }
 
         //Intake controls ===========================================================
@@ -117,10 +122,10 @@ public class MainTeleOp extends OpMode {
 
 
         //Toggle for the foundation grabber servos ==================================
-        if(gamepad2.x && !fLastState){
+        if(gamepad1.x && !fLastState){
             foundationGrabber.toggleState();
         }
-        fLastState = gamepad2.x;
+        fLastState = gamepad1.x;
     }
 
     @Override

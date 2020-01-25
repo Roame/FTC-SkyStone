@@ -12,6 +12,9 @@ public final class Constants {
 
     public static final double kDriveMaxSpeed = 1.0;
     public static final double kDriveReducedSpeed = 0.375;
+    public static final double kTurnSpeed = 270; //Deg/sec
+    public static final double kAngleErrorCorrection = 0.01; //Power/Deg Error
+    public static final double kAllottedRotationPercent = 0.2;
     public static final float kLateralSpeed = .75f; //Should be between 0 and 1.
     public static final float kLongitudinalSpeed = 0.5f; //Should be between 0 and 1.
     public static final float kRotationSpeed = 0.4f; //Indicates how much power it adds or subtracts. Total power difference will be twice this.
