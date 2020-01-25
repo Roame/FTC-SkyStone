@@ -11,9 +11,13 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.UNKNOWN;
 
 public class SkystoneDetection {
 
@@ -37,8 +41,17 @@ public class SkystoneDetection {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    public static enum SkystonePattern {
-        LEFT, MIDDLE, RIGHT, UNKNOWN
+    public enum SkystonePattern {
+        LEFT("Left"), MIDDLE("Middle"), RIGHT("Right"), UNKNOWN("Unknown");
+
+        private String name;
+        SkystonePattern(String name){
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
 
@@ -67,23 +80,48 @@ public class SkystoneDetection {
         }
     }
 
-    public void getSensedPattern(){
+
+    class sortByPos implements Comparator<Recognition> {
+        @Override
+        public int compare(Recognition r1, Recognition r2) {
+            return (int)(r1.getLeft()-r2.getLeft());
+        }
+    }
+
+    public SkystonePattern getSensedPattern() {
         List<Recognition> updatedRecognitions = TFOD.getUpdatedRecognitions();
 
-        if(updatedRecognitions != null){
-            System.out.println(String.format("Number of detected objects: %d", updatedRecognitions.size()));
+        if (updatedRecognitions != null) {
+            if (updatedRecognitions.size() != 6) {
+                return SkystonePattern.UNKNOWN;
+            }
 
-            for (Recognition recognition : updatedRecognitions){
-                System.out.print("X:" +recognition.getLeft() +" Y:"+recognition.getTop());
-                if(recognition.getLabel() == "Skystone"){
-                    System.out.print("Skystone!\n");
-                }
+            Collections.sort(updatedRecognitions, new sortByPos());
+
+            int[] stoneOrder = new int[6];
+
+            //Converting updatedRecognitions to a simpler format for comparing
+            for (int i = 0; i < updatedRecognitions.size(); i++) {
+                stoneOrder[i] = updatedRecognitions.get(i).getLabel().equals("Skystone") ? 1 : 0;
+            }
+
+            int[] left = {1, 0, 0, 1, 0, 0};
+            int[] middle = {0, 1, 0, 0, 1, 0};
+            int[] right = {0, 0, 1, 0, 0, 1};
+
+            if (stoneOrder.equals(left)) {
+                return SkystonePattern.LEFT;
+            } else if (stoneOrder.equals(middle)) {
+                return SkystonePattern.MIDDLE;
+            } else if (stoneOrder.equals(right)) {
+                return SkystonePattern.RIGHT;
+            } else {
+                return SkystonePattern.UNKNOWN;
             }
         }
+        return SkystonePattern.UNKNOWN;
+    }
 
 
         //Pseudo code for later:
-
-
-    }
 }

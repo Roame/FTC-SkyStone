@@ -18,6 +18,7 @@ public class SkystoneDetectTest extends OpMode {
 
     @Override
     public void loop() {
-        skystoneDetector.getSensedPattern();
+        SkystoneDetection.SkystonePattern sensedPattern = skystoneDetector.getSensedPattern();
+        telemetry.addData("Pattern: ", sensedPattern.name());
     }
 }
