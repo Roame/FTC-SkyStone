@@ -83,9 +83,10 @@ public class SkystoneDetection {
     public String getRecognitions(){
         List<Recognition> recognitions = TFOD.getRecognitions();
         String output = "";
-        if(recognitions != null){
-        for(Recognition recognition : recognitions){
-            output += recognition.getLabel() +": "+(recognition.getLeft()/recognition.getRight()) + " \n";
+        if(recognitions != null) {
+            for (Recognition recognition : recognitions) {
+                output += recognition.getLabel() + ": " + (recognition.getLeft() / recognition.getRight()) + " \n";
+            }
         }
         return output;
     }
@@ -98,7 +99,7 @@ public class SkystoneDetection {
         }
     }
 
-    public SkystonePattern getSensedPattern() {
+    public SkystonePattern getSensedPattern(){
         List<Recognition> updatedRecognitions = TFOD.getRecognitions();
 
         if (updatedRecognitions != null) {
