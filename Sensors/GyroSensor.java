@@ -72,10 +72,20 @@ public class GyroSensor {
     public static double getDifference(double angle1, double angle2){
         //Positive output indicates CCW rotation from angle 1 to angle 2
         //Negative output indicates CW rotation from angle 1 to angle 2
-        double difference = angle2-angle1;
-        double output = Math.abs(difference) <= 180 ? difference : Math.copySign(360, difference) - difference;
 
-        return output;
+        if(angle1 > 0 && angle2 >0){
+            return angle2-angle1;
+        }
+        if(angle1>0 && angle2 <0){
+            return Math.abs(angle2-angle1) > 180? 360-Math.abs(angle2-angle1) : angle2-angle1;
+        }
+        if(angle1<0 && angle2>0){
+            return Math.abs(angle2-angle1) <180? angle2-angle1 : -(360-Math.abs(angle2-angle1));
+        }
+        if(angle1<0&& angle2<0){
+            return angle2-angle1;
+        }
+        return 0;
     }
 
 }

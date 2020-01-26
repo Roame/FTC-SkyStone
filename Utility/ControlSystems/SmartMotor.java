@@ -19,7 +19,7 @@ public class SmartMotor {
 
     //Variables for keeping track of previous states
     private boolean firstRun = true;
-    private int lastPositionRad = 0;
+    private double lastPositionRad = 0;
     private double lastTimeStamp = 0;
 
     //Variables for smoothing out readings
@@ -108,7 +108,7 @@ public class SmartMotor {
 
             case POSITION:
                 //Get distance to target
-                //Calc distance needed to deccelerate
+                //Calc distance needed to decelerate
                 //Compare values
                 break;
 
@@ -150,10 +150,14 @@ public class SmartMotor {
             return; //Exit function to avoid evaluating distance over zero time
         }
         double cPos = (motor.getCurrentPosition()/encoderTicksPerRev)*2*Math.PI;
-        double elapsedTime = (System.currentTimeMillis() - lastTimeStamp)/1000.0; //Converted to seconds
+        double cTime = System.currentTimeMillis();
+        double elapsedTime = (cTime - lastTimeStamp)/1000.0; //Converted to seconds
         double cVal = (cPos-lastPositionRad)/elapsedTime;
 
-        ESVelVal = expSmoothing(cVal, ESPosVal, alpha); //Update smoothing
+        ESVelVal = expSmoothing(cVal, ESVelVal, alpha); //Update smoothing
+
+        lastPositionRad = cPos;
+        lastTimeStamp = cTime;
     }
 
     private double expSmoothing(double currentValue, double runningValue, double alphaVal){

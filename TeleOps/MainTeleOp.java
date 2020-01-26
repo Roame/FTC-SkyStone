@@ -71,10 +71,13 @@ public class MainTeleOp extends OpMode {
         }
         driveLastState = gamepad1.a;
         if(!driveReversed) {
-            drivetrain.correctedDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower); //Controls for forward driving
+            drivetrain.correctedDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower, !(gamepad1.left_trigger<0.5)); //Controls for forward driving
         } else {
-            drivetrain.correctedDrive(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower); //Controls for reversed driving
+            drivetrain.correctedDrive(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, drivePower, !(gamepad1.left_trigger<0.5)); //Controls for reversed driving
         }
+
+
+
 
         //Intake controls ===========================================================
         if(gamepad1.right_bumper){

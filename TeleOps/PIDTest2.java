@@ -13,7 +13,7 @@ public class PIDTest2 extends OpMode {
 
     @Override
     public void init() {
-        motor = new SmartMotor(hardwareMap, "motor", 250);
+        motor = new SmartMotor(hardwareMap, "motor", 1680);
         motor.configPositionPID(0.01, 0.01, 0.01);
         motor.setDirection(DcMotor.Direction.FORWARD);
     }
@@ -21,7 +21,9 @@ public class PIDTest2 extends OpMode {
     @Override
     public void loop() {
         motor.update();
+        //motor.setPower(0.5);
         telemetry.addData("Current Position", motor.getMotorPosRad());
-        telemetry.addData("Current Velocity", motor. getMotorVelRad());
+        telemetry.addData("Current Velocity", motor.getMotorVelRad());
+        telemetry.addData("Encoder Output", motor.motor.getCurrentPosition());
     }
 }
