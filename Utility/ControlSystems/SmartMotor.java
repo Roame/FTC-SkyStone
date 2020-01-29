@@ -22,6 +22,11 @@ public class SmartMotor {
     private double lastPositionRad = 0;
     private double lastTimeStamp = 0;
 
+    //Variables for position curve
+    private double posCTPosition = 0;
+    private double posCTVelocity = 0;
+    private double posLastTimeStamp = 0;
+
     //Variables for smoothing out readings
     private double ESPosVal = 0;
     private double ESVelVal = 0;
@@ -84,6 +89,7 @@ public class SmartMotor {
     public void setPosition(double position){
         //Not resetting the PID in order to attempt make transitions more fluid
         targetPosition = position;
+        //Setting up the PID is done continuously in the update method
         cState = MotorState.POSITION;
     }
 
@@ -91,6 +97,8 @@ public class SmartMotor {
     public void setVelocity(double velocity) {
         //Not resetting the PID in order to attempt make transitions more fluid
         targetVelocity = velocity;
+        //PID is set up here as there are no additional functions influencing it
+        velocityPID.setTarget(velocity);
         cState = MotorState.VELOCITY;
     }
 
@@ -107,19 +115,80 @@ public class SmartMotor {
                 break;
 
             case POSITION:
-                //Get distance to target
-                //Calc distance needed to decelerate
-                //Compare values
+                //Calculate the next position and update internal variables:
+                double newPosition = getNextPosition();
+                //Feed new position to PID and motor
+                motor.setPower(positionPID.getOutput(getMotorPosRad(), newPosition));
                 break;
 
             case VELOCITY:
                 //Currently just directly feeding the PID and motor
-                motor.setPower(velocityPID.getOutput(getMotorVelRad(),targetVelocity));
+                motor.setPower(velocityPID.getOutput(getMotorVelRad()));
+                break;
+
+            default:
+                //Do nothing, this case should not be called
                 break;
         }
 
 
     }
+
+
+
+    public double getNextPosition(){
+        double remainingDist = targetPosition - posCTPosition;
+        double decelerationDist = getDecelerationDist();
+
+        double cTime = System.currentTimeMillis();
+        double elapsedSeconds = (cTime-posLastTimeStamp)/1000.0;
+        posLastTimeStamp = cTime;
+
+        //If there is still time to accelerate/cruise to the target:
+        if(Math.abs(decelerationDist) < Math.abs(remainingDist)){
+            //If the current velocity has yet to achieve cruise velocity:
+            if(Math.abs(posCTVelocity) < cruiseVelocity){
+                double effectiveAcceleration = Math.copySign(maxAcceleration, remainingDist); //Acting with the motion
+                posCTPosition += posCTVelocity*elapsedSeconds + 0.5*effectiveAcceleration*Math.pow(elapsedSeconds,2); //Determine new position
+                posCTVelocity += effectiveAcceleration*elapsedSeconds; //Determining new velocity for next loop
+                return posCTPosition;
+            }
+
+            //If the current velocity has met or exceeded the cruise velocity:
+            if(Math.abs(posCTVelocity) >= cruiseVelocity) {
+                //No acceleration necessary
+                posCTVelocity = Math.copySign(cruiseVelocity, posCTVelocity);
+                posCTPosition += posCTVelocity*elapsedSeconds;
+                return posCTPosition;
+            }
+        }
+
+        //If the the motor needs to begin decelerating:
+        if(Math.abs(decelerationDist) >= Math.abs(remainingDist)){
+            double effectiveAcceleration = Math.copySign(maxAcceleration, -remainingDist); //Acting against the motion
+            posCTPosition += posCTVelocity*elapsedSeconds + 0.5*effectiveAcceleration*Math.pow(elapsedSeconds,2); //Determine new position
+            posCTVelocity += effectiveAcceleration*elapsedSeconds; //Determining new velocity for next loop
+            return posCTPosition;
+        }
+
+        //In all other cases, default to the current internal target:
+        return posCTPosition;
+    }
+
+    public double getDecelerationDist(){
+        //Returns the distance required to decelerate to 0, allowing for proper regulation of the velocity curve
+        return -(-Math.pow(posCTVelocity, 2)/(2*maxAcceleration));
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
