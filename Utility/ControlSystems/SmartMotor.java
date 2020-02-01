@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.Utility.ControlSystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 public class SmartMotor {
     public DcMotor motor;
     private PIDController2 positionPID;
@@ -49,10 +47,7 @@ public class SmartMotor {
     private MotorState cState;
 
 
-    private Telemetry telemetry;
-
-    public SmartMotor(HardwareMap hw, String name, double encodersPerRev, Telemetry telemetry){
-        this.telemetry = telemetry;
+    public SmartMotor(HardwareMap hw, String name, double encodersPerRev){
         encoderTicksPerRev = encodersPerRev;
         motor = hw.get(DcMotor.class, name);
 
@@ -175,7 +170,6 @@ public class SmartMotor {
                 //Calculate the next position and update internal variables:
                 double newPosition = getNextPosition();
                 //Feed new position to PID and motor
-                telemetry.addData("Next Pos", newPosition);
                 motor.setPower(positionPID.getOutput(getMotorPosRad(), newPosition));
                 break;
 
@@ -368,7 +362,7 @@ public class SmartMotor {
 
 
 
-    private double encoderUnitsToRads(double _encUnits){
+    public double encoderUnitsToRads(double _encUnits){
         return (_encUnits/encoderTicksPerRev)*2*Math.PI;
     }
 }

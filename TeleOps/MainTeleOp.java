@@ -82,8 +82,10 @@ public class MainTeleOp extends OpMode {
         //Intake controls ===========================================================
         if(gamepad1.right_bumper){
             intake.collect();
+            arm.clearStorage();
         } else if (gamepad1.left_bumper){
             intake.reverse();
+            arm.clearStorage();
         } else {
             intake.stop();
         }
@@ -92,7 +94,7 @@ public class MainTeleOp extends OpMode {
         //Arm system controls =======================================================
         if(gamepad2.dpad_up){
             arm.moveUp();
-        } else if(gamepad2.dpad_down){
+        } else if(gamepad2.dpad_down && !arm.clearingStorage){
             arm.moveDown();
         } else {
             arm.holdPosition();
