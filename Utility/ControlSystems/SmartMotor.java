@@ -6,12 +6,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SmartMotor {
-    public DcMotor motor = null;
-    private PIDController2 positionPID = null;
-    private PIDController2 velocityPID = null;
+    public DcMotor motor;
+    private PIDController2 positionPID;
+    private PIDController2 velocityPID;
     private double encoderTicksPerRev;
 
-    //maxAcceleration and cruiseVelocity are only used in positional controls
+    //maxAcceleration and cruiseVelocity
     private double maxAcceleration = 0;
     private double cruiseVelocity = 0;
 
@@ -19,16 +19,23 @@ public class SmartMotor {
     private double targetPosition = 0;
     private double targetLimPosition = 0;
     private double targetVelocity = 0;
+    private double targetLimVelocity = 0;
+
+    //Soft limits:
+    private double maxEncoderPos = 0;
+    private double minEncoderPos = 0;
 
     //Variables for keeping track of previous states
-    private boolean firstRun = true;
+    private int loopCount = 0; //Used to take track the first few loops
+    private int targetLoops = 3; //How many loops should be ran before starting operation
+    private boolean firstRunReadings = true;
     private double lastPositionRad = 0;
     private double lastTimeStamp = 0;
+    private double loopElapsedSeconds = 0;
 
-    //Variables for position curve
-    private double posCTPosition = 0;
-    private double posCTVelocity = 0;
-    private double posLastTimeStamp = 0;
+    //Variables for position/velocity curves
+    private double cTPosition = 0;
+    private double cTVelocity = 0;
 
     //Variables for smoothing out readings
     private double ESPosVal = 0;
@@ -37,15 +44,15 @@ public class SmartMotor {
     private double alpha = (1.0/3.0); //Roughly smoothing out over the last 1/x readings
 
     private enum MotorState {
-        POWER, POSITION, POSITION_LIMITED, VELOCITY
+        POWER, POSITION, POSITION_LIMITED, VELOCITY, VELOCITY_LIMITED
     }
-    private MotorState cState = null;
+    private MotorState cState;
 
 
     private Telemetry telemetry;
 
     public SmartMotor(HardwareMap hw, String name, double encodersPerRev, Telemetry telemetry){
-        this.telemetry =telemetry;
+        this.telemetry = telemetry;
         encoderTicksPerRev = encodersPerRev;
         motor = hw.get(DcMotor.class, name);
 
@@ -85,6 +92,11 @@ public class SmartMotor {
         cruiseVelocity = velocity;
     }
 
+    public void setEncoderLimits(double min, double max){
+        minEncoderPos = min;
+        maxEncoderPos = max;
+    }
+
 
     public void setPower(double power){
         motor.setPower(power);
@@ -99,6 +111,14 @@ public class SmartMotor {
 
     public void setPositionWithLimits(double position){
         //Not resetting the PID in order to attempt make transitions more fluid
+        //Restricting position to bounds
+        if(!(maxEncoderPos == 0 && minEncoderPos == 0)) {
+            if (position > maxEncoderPos) {
+                position = maxEncoderPos;
+            } else if (position < minEncoderPos) {
+                position = minEncoderPos;
+            }
+        }
         targetLimPosition = position;
         //Setting up the PID is done continuously in the update method
         cState = MotorState.POSITION_LIMITED;
@@ -113,20 +133,42 @@ public class SmartMotor {
         cState = MotorState.VELOCITY;
     }
 
+    public void setVelocityWithLimits(double velocity){
+        //Restricting velocity:
+        if(Math.abs(velocity) > cruiseVelocity){
+            velocity = Math.copySign(cruiseVelocity, velocity);
+        }
+        targetLimVelocity = velocity;
+        cState = MotorState.VELOCITY_LIMITED;
+    }
+
 
 
     public void update(){
         //Main function of this class. Monitors/regulates motor behavior
+
+        //This function always runs:
         updateReadings(); //Updating values for runtime
+
+        //First few loops are reserved to just tracking the motor's current behavior
+        if(loopCount < targetLoops){
+            loopCount++;
+            updateInternalValues(); //Preparing for limited positional or velocity controls
+            return; //Exit motor class and allow code to proceed
+        }
+
 
         //Depending on the current target state, motor behavior will change:
         switch (cState){
             case POWER:
                 //Do nothing, DcMotor class handles this for us.
+                updateInternalValues(); //Keeping variables up to date
                 break;
 
             case POSITION:
                 motor.setPower(positionPID.getOutput(getMotorPosRad()));
+
+                updateInternalValues(); //Keeping variables up to date
                 break;
 
             case POSITION_LIMITED:
@@ -140,48 +182,49 @@ public class SmartMotor {
             case VELOCITY:
                 //Currently just directly feeding the PID and motor
                 motor.setPower(velocityPID.getOutput(getMotorVelRad()));
+
+                updateInternalValues(); //Keeping variables up to date
+                break;
+
+            case VELOCITY_LIMITED:
+                //Get next velocity:
+                double newVelocity = getNextVelocity();
+                //Update PID and motor
+                motor.setPower(velocityPID.getOutput(getMotorVelRad(), newVelocity));
+
                 break;
 
             default:
                 //Do nothing, this case should not be called
                 break;
         }
-
-        firstRun = false;
     }
 
 
 
     public double getNextPosition(){
-        if(firstRun){
-            posLastTimeStamp = System.currentTimeMillis();
-            posCTPosition = getMotorPosRad();
-            return posCTPosition;
-        }
-        double remainingDist = targetLimPosition - posCTPosition;
+        double remainingDist = targetLimPosition - cTPosition;
         double decelerationDist = getDecelerationDist();
 
-        double cTime = System.currentTimeMillis();
-        double elapsedSeconds = (cTime-posLastTimeStamp)/1000.0;
-        posLastTimeStamp = cTime;
+        double elapsedSeconds = loopElapsedSeconds;
 
         double effectiveAcceleration;
         //If there is still time to accelerate/cruise to the target:
         if(Math.abs(decelerationDist) < Math.abs(remainingDist)){
             //If the current velocity has yet to achieve cruise velocity:
-            if(Math.abs(posCTVelocity) < cruiseVelocity || posCTVelocity != Math.copySign(posCTPosition, remainingDist)){
+            if(Math.abs(cTVelocity) < cruiseVelocity || cTVelocity != Math.copySign(cTPosition, remainingDist)){
                 effectiveAcceleration = Math.copySign(maxAcceleration, remainingDist); //Acting with the motion
-                posCTPosition += posCTVelocity*elapsedSeconds + 0.5*effectiveAcceleration*Math.pow(elapsedSeconds,2); //Determine new position
-                posCTVelocity += effectiveAcceleration*elapsedSeconds; //Determining new velocity for next loop
-                return posCTPosition;
+                cTPosition += cTVelocity *elapsedSeconds + 0.5*effectiveAcceleration*Math.pow(elapsedSeconds,2); //Determine new position
+                cTVelocity += effectiveAcceleration*elapsedSeconds; //Determining new velocity for next loop
+                return cTPosition;
             }
 
             //If the current velocity has met or exceeded the cruise velocity:
-            if(Math.abs(posCTVelocity) >= cruiseVelocity) {
+            if(Math.abs(cTVelocity) >= cruiseVelocity) {
                 //No acceleration necessary
-                posCTVelocity = Math.copySign(cruiseVelocity, posCTVelocity);
-                posCTPosition += posCTVelocity*elapsedSeconds;
-                return posCTPosition;
+                cTVelocity = Math.copySign(cruiseVelocity, cTVelocity);
+                cTPosition += cTVelocity *elapsedSeconds;
+                return cTPosition;
             }
         }
 
@@ -189,25 +232,67 @@ public class SmartMotor {
         if(Math.abs(decelerationDist) >= Math.abs(remainingDist)){
             effectiveAcceleration = 0;
             //Determining acceleration based on directionality of the target and the current motion:
-            if((posCTVelocity >0 && remainingDist >0) || (posCTVelocity<0 &&remainingDist <0)) {
+            if((cTVelocity >0 && remainingDist >0) || (cTVelocity <0 &&remainingDist <0)) {
                 effectiveAcceleration = Math.copySign(maxAcceleration, -remainingDist); //Acting away from target
             }
-            if((posCTVelocity<0 && remainingDist>0) || (posCTVelocity>0 && remainingDist<0)){
+            if((cTVelocity <0 && remainingDist>0) || (cTVelocity >0 && remainingDist<0)){
                 effectiveAcceleration = Math.copySign(maxAcceleration, remainingDist); //Acting towards target
             }
             //Calculating new position
-            posCTPosition += posCTVelocity * elapsedSeconds + 0.5 * effectiveAcceleration * Math.pow(elapsedSeconds, 2); //Determine new position
-            posCTVelocity += effectiveAcceleration * elapsedSeconds; //Determining new velocity for next loop
-            return posCTPosition;
+            cTPosition += cTVelocity * elapsedSeconds + 0.5 * effectiveAcceleration * Math.pow(elapsedSeconds, 2); //Determine new position
+            cTVelocity += effectiveAcceleration * elapsedSeconds; //Determining new velocity for next loop
+            return cTPosition;
         }
 
         //In all other cases, default to the current internal target:
-        return posCTPosition;
+        return cTPosition;
     }
+
+
+
+    private double getNextVelocity(){
+        double elapsedSeconds = loopElapsedSeconds;
+
+        double distToLim;
+        if(targetLimVelocity > 0){
+            distToLim = encoderUnitsToRads(maxEncoderPos)-getMotorPosRad();
+        } else if(targetLimVelocity < 0){
+            distToLim = encoderUnitsToRads(minEncoderPos)-getMotorPosRad();
+        } else {
+            return 0;
+        }
+        if(maxEncoderPos == 0 && minEncoderPos == 0){
+            distToLim = Math.copySign(1000, targetLimVelocity); //Placeholder val
+        }
+
+        double decelDist = getDecelerationDist();
+
+        if(Math.abs(distToLim)>Math.abs(decelDist)){
+            if(cTVelocity < targetLimVelocity){
+                double effectiveAcceleration = Math.copySign(maxAcceleration, distToLim); //Motion is directed towards concerned limit
+                cTVelocity += effectiveAcceleration*elapsedSeconds;
+                cTVelocity = Math.abs(cTVelocity) > cruiseVelocity ? Math.copySign(cruiseVelocity, targetLimVelocity) : cTVelocity;
+                return cTVelocity;
+            }
+            if(Math.abs(cTVelocity) >= cruiseVelocity){
+                cTVelocity = Math.copySign(cruiseVelocity, targetLimVelocity);
+                return  cTVelocity;
+            }
+        } else if(Math.abs(distToLim)<=Math.abs(decelDist)){
+            double effectiveAcceleration = Math.copySign(maxAcceleration, -cTVelocity); //Acting against the motion to bring velocity to zero
+            cTVelocity += effectiveAcceleration*elapsedSeconds;
+            if((effectiveAcceleration<0 && cTVelocity <0) || (effectiveAcceleration>0 && cTVelocity >0)){
+                cTVelocity = 0;
+            }
+            return cTVelocity;
+        }
+        return cTVelocity;
+    }
+
 
     public double getDecelerationDist(){
         //Returns the distance required to decelerate to 0, allowing for proper regulation of the velocity curve
-        return -(-Math.pow(posCTVelocity, 2)/(2*maxAcceleration));
+        return -(-Math.pow(cTVelocity, 2)/(2*maxAcceleration));
     }
 
 
@@ -218,7 +303,12 @@ public class SmartMotor {
 
 
 
-
+    private void updateInternalValues(){
+        //This function is used to track the motor's motion while certain control modes are not being used
+        //This ensures that when we switch to these methods, they will be aware of the current motion and be able to handle it accordingly
+        cTPosition = getMotorPosRad();
+        cTVelocity = getMotorVelRad();
+    }
 
 
 
@@ -231,25 +321,26 @@ public class SmartMotor {
     }
 
     private void updateReadings(){
-        //Used to update motion readings critical to operation
-        updatePosRadReadings();
-        updateVelRadReadings();
+        //Used to update readings critical to operation
+        updateLoopElapsedSeconds(); //Tracking loop time
+        updatePosRadReadings(); //Getting position
+        updateVelRadReadings(); //Getting velocity
+        firstRunReadings = false; //First run is completed
     }
 
     private void updatePosRadReadings(){
-        double cVal = (motor.getCurrentPosition()/encoderTicksPerRev)*2*Math.PI;
+        double cVal = encoderUnitsToRads(motor.getCurrentPosition());
         ESPosVal = expSmoothing(cVal, ESPosVal, alpha); //Used for smoothing the output to avoid instability
     }
 
     private void updateVelRadReadings(){
-        if(firstRun){
-            lastTimeStamp = System.currentTimeMillis();
-            lastPositionRad = motor.getCurrentPosition();
+        if(firstRunReadings){
+            lastPositionRad = encoderUnitsToRads(motor.getCurrentPosition());
             return; //Exit function to avoid evaluating distance over zero time
         }
-        double cPos = (motor.getCurrentPosition()/encoderTicksPerRev)*2*Math.PI;
+        double cPos = encoderUnitsToRads(motor.getCurrentPosition());
         double cTime = System.currentTimeMillis();
-        double elapsedTime = (cTime - lastTimeStamp)/1000.0; //Converted to seconds
+        double elapsedTime = loopElapsedSeconds;
         double cVal = (cPos-lastPositionRad)/elapsedTime;
 
         ESVelVal = expSmoothing(cVal, ESVelVal, alpha); //Update smoothing
@@ -261,5 +352,23 @@ public class SmartMotor {
     private double expSmoothing(double currentValue, double runningValue, double alphaVal){
         //The output of this function should be used to update the runningValue
         return (alphaVal*currentValue) + ((1-alphaVal)*runningValue);
+    }
+
+
+
+    private void updateLoopElapsedSeconds(){
+        //This function measures the time between runs
+        if(firstRunReadings){
+            lastTimeStamp = System.currentTimeMillis();
+            return ;
+        }
+        loopElapsedSeconds = (System.currentTimeMillis()-lastTimeStamp)/1000.0;
+        return;
+    }
+
+
+
+    private double encoderUnitsToRads(double _encUnits){
+        return (_encUnits/encoderTicksPerRev)*2*Math.PI;
     }
 }
