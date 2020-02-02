@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.StoneIntake;
 public class MainTeleOp extends OpMode {
     MecanumDrivetrain drivetrain = new MecanumDrivetrain();
     StoneIntake intake = new StoneIntake();
-    StoneArmSystem arm = new StoneArmSystem();
+    StoneArmSystem arm = new StoneArmSystem(telemetry);
     StoneGripper gripper = new StoneGripper();
     FoundationGrabber foundationGrabber = new FoundationGrabber();
 
@@ -96,7 +96,7 @@ public class MainTeleOp extends OpMode {
             arm.moveUp();
         } else if(gamepad2.dpad_down && !arm.clearingStorage){
             arm.moveDown();
-        } else {
+        } else if (!arm.clearingStorage){
             arm.holdPosition();
         }
 

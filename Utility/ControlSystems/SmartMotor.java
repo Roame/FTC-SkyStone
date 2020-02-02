@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Utility.ControlSystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class SmartMotor {
     public DcMotor motor;
     private PIDController2 positionPID;
@@ -46,8 +48,10 @@ public class SmartMotor {
     }
     private MotorState cState;
 
+    private Telemetry telemetry;
 
-    public SmartMotor(HardwareMap hw, String name, double encodersPerRev){
+    public SmartMotor(HardwareMap hw, String name, double encodersPerRev, Telemetry telemetry){
+        this.telemetry = telemetry;
         encoderTicksPerRev = encodersPerRev;
         motor = hw.get(DcMotor.class, name);
 
@@ -182,7 +186,9 @@ public class SmartMotor {
 
             case VELOCITY_LIMITED:
                 //Get next velocity:
+                telemetry.addData("Current Target", targetLimVelocity);
                 double newVelocity = getNextVelocity();
+                cTPosition = getMotorPosRad(); //Updating variables
                 //Update PID and motor
                 motor.setPower(velocityPID.getOutput(getMotorVelRad(), newVelocity));
 
@@ -247,14 +253,13 @@ public class SmartMotor {
     private double getNextVelocity(){
         double elapsedSeconds = loopElapsedSeconds;
 
-        double distToLim;
+        double distToLim = 0;
         if(targetLimVelocity > 0){
             distToLim = encoderUnitsToRads(maxEncoderPos)-getMotorPosRad();
         } else if(targetLimVelocity < 0){
             distToLim = encoderUnitsToRads(minEncoderPos)-getMotorPosRad();
-        } else {
-            return 0;
         }
+
         if(maxEncoderPos == 0 && minEncoderPos == 0){
             distToLim = Math.copySign(1000, targetLimVelocity); //Placeholder val
         }
@@ -262,14 +267,14 @@ public class SmartMotor {
         double decelDist = getDecelerationDist();
 
         if(Math.abs(distToLim)>Math.abs(decelDist)){
-            if(cTVelocity < targetLimVelocity){
+            if(Math.abs(cTVelocity) < Math.abs(targetLimVelocity)){
                 double effectiveAcceleration = Math.copySign(maxAcceleration, distToLim); //Motion is directed towards concerned limit
                 cTVelocity += effectiveAcceleration*elapsedSeconds;
                 cTVelocity = Math.abs(cTVelocity) > cruiseVelocity ? Math.copySign(cruiseVelocity, targetLimVelocity) : cTVelocity;
                 return cTVelocity;
             }
-            if(Math.abs(cTVelocity) >= cruiseVelocity){
-                cTVelocity = Math.copySign(cruiseVelocity, targetLimVelocity);
+            if(Math.abs(cTVelocity) >= Math.abs(targetLimVelocity)){
+                cTVelocity = targetLimVelocity;
                 return  cTVelocity;
             }
         } else if(Math.abs(distToLim)<=Math.abs(decelDist)){

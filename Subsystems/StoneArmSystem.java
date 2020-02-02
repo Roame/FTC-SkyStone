@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Utility.ControlSystems.EncMotor;
 import org.firstinspires.ftc.teamcode.Utility.ControlSystems.SmartMotor;
 
@@ -22,12 +23,14 @@ public class StoneArmSystem {
 
     private double adjustmentPos = 0.0;
     public boolean clearingStorage = false;
+    private Telemetry telemetry;
 
-    public StoneArmSystem(){
+    public StoneArmSystem(Telemetry telemetry){
+        this.telemetry = telemetry;
     }
 
     public void init(HardwareMap hardwareMap){
-        armMotor = new SmartMotor(hardwareMap, kArmMotor, 3892);
+        armMotor = new SmartMotor(hardwareMap, kArmMotor, 3892, telemetry);
         armMotor.configPositionPID(kArmPosP, kArmPosI, kArmPosD);
         armMotor.configVelocityPID(kArmPVelP, kArmVelI, kArmVelD, kArmVelF);
         armMotor.setEncoderLimits(kArmMinEncoder, kArmMaxEncoder);
