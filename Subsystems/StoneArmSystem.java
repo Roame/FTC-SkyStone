@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -31,6 +32,7 @@ public class StoneArmSystem {
 
     public void init(HardwareMap hardwareMap){
         armMotor = new SmartMotor(hardwareMap, kArmMotor, 3892, telemetry);
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         armMotor.configPositionPID(kArmPosP, kArmPosI, kArmPosD);
         armMotor.configVelocityPID(kArmPVelP, kArmVelI, kArmVelD, kArmVelF);
         armMotor.setEncoderLimits(kArmMinEncoder, kArmMaxEncoder);
