@@ -14,6 +14,9 @@ public final class Constants {
 
     public static final double kDriveMaxSpeed = 1.0;
     public static final double kDriveReducedSpeed = 0.375;
+    public static final double kTurnSpeed = 105; //Deg/sec
+    public static final double kAngleErrorCorrection = 0.05; //Power/Deg Error
+    public static final double kAllottedRotationPercent = 2.0;
     public static final float kLateralSpeed = .75f; //Should be between 0 and 1.
     public static final float kLongitudinalSpeed = 0.5f; //Should be between 0 and 1.
     public static final float kRotationSpeed = 0.4f; //Indicates how much power it adds or subtracts. Total power difference will be twice this.
@@ -21,15 +24,19 @@ public final class Constants {
     //For the stone intake:
     public static final String kIntakeRightMotor = "IRM";
     public static final String kIntakeLeftMotor = "ILM";
-    public static  final double kIntakePower = 0.5;
+
+    public static  final double kIntakePower = 0.625;
 
     //For stone arm system:
     public static final String kArmMotor = "arm motor";
     public static final int kArmMaxEncoder = 2100;
-    public static final int kArmActivatedPosition = 1000; //This is where it is safe to rotate the encoder head.
+    public static final int kArmActivatedPosition = 850; //This is where it is safe to rotate the encoder head.
+    public static final int kArmIntakingPosition = 200;
     public static final int kArmMinEncoder = 0;
-    public static final double kArmP = 0.0032, kArmI = 0.0016, kArmD = 0.0;
-    public static final double kArmMaxVelocity = Math.PI/3.0, kArmAcceleration = Math.PI*1.0; //Was originally: velocity = pi/4, acceleration = pi*0.75;
+    //public static final double kArmP = 0.0032, kArmI = 0.0016, kArmD = 0.0;
+    public static final double kArmPosP = 2.0, kArmPosI = 0.0, kArmPosD = 0.05;
+    public static final double kArmPVelP = 0.28, kArmVelI = 0.005, kArmVelD = 0.004, kArmVelF = 0.0425;
+    public static final double kArmMaxVelocity = Math.PI/2.0, kArmAcceleration = 4*(Math.PI/3); //Was originally: velocity = pi/4, acceleration = pi*0.75;
     public static final String kArmServo = "arm servo";
     public static final double kArmServoStraight = 0.6;
     public static final double kArmServoRotated = 0.23;
